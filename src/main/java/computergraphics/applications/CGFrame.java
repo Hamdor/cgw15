@@ -51,8 +51,7 @@ public class CGFrame extends AbstractCGFrame {
    */
   @Override
   protected void timerTick() {
-    getCamera().rotateHorizontally(0.01);
-    getCamera().rotateVertically(0.01);
+    System.out.println("Tick");
   }
 
   public void keyPressed(int keyCode) {
@@ -63,7 +62,7 @@ public class CGFrame extends AbstractCGFrame {
    * Program entry point.
    */
   public static void main(String[] args) {
-    // The timer ticks every 10 ms.
-    new CGFrame(10);
+    // The timer ticks every 1000 ms.
+    new CGFrame(1000);
   }
 }

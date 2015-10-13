@@ -1,7 +1,7 @@
 /**
  * Prof. Philipp Jenke
  * Hochschule für Angewandte Wissenschaften (HAW), Hamburg
- *
+ * 
  * Base framework for "WP Computergrafik".
  */
 package computergraphics.framework;
@@ -11,7 +11,7 @@ import computergraphics.math.Vector3;
 
 /**
  * Represents a camera.
- *
+ * 
  * @author Philipp Jenke
  */
 public class Camera {
@@ -136,7 +136,7 @@ public class Camera {
 
   /**
    * Zooming
-   *
+   * 
    * @param d
    */
   public void zoom(double d) {

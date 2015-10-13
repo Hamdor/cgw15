@@ -9,11 +9,10 @@ package computergraphics.scenegraph;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.lang.model.type.IntersectionType;
-
 import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.math.Ray;
 
+import computergraphics.datastructures.IntersectionResult;
+import computergraphics.datastructures.Ray3D;
 import computergraphics.math.Vector3;
 
 /**
@@ -61,7 +60,7 @@ public abstract class Node {
   public abstract void drawGl(GL2 gl);
 
   // DEBUGGING
-  public IntersectionType calcIntersection(Node node, Ray ray) {
+  public IntersectionResult calcIntersection(Node node, Ray3D ray) {
     return null;
   }
 
@@ -69,7 +68,7 @@ public abstract class Node {
     return new Vector3(0, 1, 0);
   }
   
-  public IntersectionType findIntersection(Node object, Ray ray) {
+  public IntersectionResult findIntersection(Node object, Ray3D ray) {
     return null;
   }
 
