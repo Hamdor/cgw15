@@ -11,6 +11,7 @@ import java.util.Random;
 
 import computergraphics.framework.AbstractCGFrame;
 import computergraphics.math.Vector3;
+import computergraphics.scenegraph.ColorNode;
 import computergraphics.scenegraph.CuboidNode;
 import computergraphics.scenegraph.GroupNode;
 import computergraphics.scenegraph.Node;
@@ -121,8 +122,10 @@ public class CGFrame extends AbstractCGFrame {
 		bottom.addChild(translate);
 		translate.addChild(new SphereNode(height > 0 ? 0.6 : 0.3, 20));
 		// Build trunk
+		ColorNode trunkColor = new ColorNode (0.5,0.5,0.0);
 		TranslationNode trunk = new TranslationNode(new Vector3(0, height > 0 ? -0.55 : -0.25, 0));
-		translate.addChild(trunk);
+		translate.addChild(trunkColor);
+		trunkColor.addChild(trunk);
 		trunk.addChild(new CuboidNode(height > 0 ? 0.30 : 0.15, 0.5 + height, height > 0 ? 0.30 : 0.15));
 	}
 
