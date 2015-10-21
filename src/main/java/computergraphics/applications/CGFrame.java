@@ -102,9 +102,9 @@ public class CGFrame extends AbstractCGFrame {
 		ScaleNode scaleTrees = new ScaleNode(new Vector3(0.5, 0.5, 0.5));
 		landscape.addChild(scaleTrees);
 
-		// Generate between 50 to 100 trees
-		final int treesMin = 50;
-		final int treesMax = 100;
+		// Generate between 20 to 50 trees
+		final int treesMin = 20;
+		final int treesMax = 50;
 		for (int i = 0; i < new Random().nextInt(treesMax - treesMin + 1) + treesMin; i++) {
 			//generate trees
 			double x, y, z;
@@ -116,13 +116,14 @@ public class CGFrame extends AbstractCGFrame {
 	}
 
 	private void addTree(Node bottom, Vector3 position) {
-		TranslationNode translate = new TranslationNode(position);
+    final double height = new Random().nextInt(2) * 0.6; // two different heights
+		TranslationNode translate = new TranslationNode(position.add(new Vector3(0, height,0)));
 		bottom.addChild(translate);
-		
-		translate.addChild(new SphereNode(0.3, 20));
-		TranslationNode trunk = new TranslationNode(new Vector3(0, -0.25, 0));
+		translate.addChild(new SphereNode(height > 0 ? 0.6 : 0.3, 20));
+		// Build trunk
+		TranslationNode trunk = new TranslationNode(new Vector3(0, height > 0 ? -0.55 : -0.25, 0));
 		translate.addChild(trunk);
-		trunk.addChild(new CuboidNode(0.15, 0.5, 0.15));
+		trunk.addChild(new CuboidNode(height > 0 ? 0.30 : 0.15, 0.5 + height, height > 0 ? 0.30 : 0.15));
 	}
 
 	private void addComplexObject(Node add) {
@@ -168,7 +169,7 @@ public class CGFrame extends AbstractCGFrame {
 	protected void timerTick() {
 		//move helicopter
 		if (helicopterRotator != null) {
-		  helicopterRotator.setAngle(helicopterRotator.getAngle()+2);
+		  helicopterRotator.setAngle(helicopterRotator.getAngle() + 0.5f);
 		}
 		//move rotor
 		if (rotorRotator != null) {
@@ -184,7 +185,7 @@ public class CGFrame extends AbstractCGFrame {
 	 * Program entry point.
 	 */
 	public static void main(String[] args) {
-		// The timer ticks every 100 ms.
-		new CGFrame(100);
+		// The timer ticks every 10 ms.
+		new CGFrame(10);
 	}
 }
