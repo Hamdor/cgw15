@@ -7,6 +7,8 @@
 
 package computergraphics.applications;
 
+import java.util.Random;
+
 import computergraphics.framework.AbstractCGFrame;
 import computergraphics.math.Vector3;
 import computergraphics.scenegraph.CuboidNode;
@@ -79,20 +81,14 @@ public class CGFrame extends AbstractCGFrame {
 		translateLandscape.addChild(scaleLandscape);
 		
 		addLandscape(scaleLandscape);
-
 	}
 
 	private Node addHelicopterAnimation(Node parent) {
-		
 		helicopterRotator = new RotationNode(0, new Vector3(0, 1, 0));
 		parent.addChild(helicopterRotator);
 		
 		helicopterTranslater = new TranslationNode(new Vector3(1, 0, 0));
 		helicopterRotator.addChild(helicopterTranslater);
-		
-		
-		
-		
 		
 		return helicopterTranslater;
 	}
@@ -106,7 +102,10 @@ public class CGFrame extends AbstractCGFrame {
 		ScaleNode scaleTrees = new ScaleNode(new Vector3(0.5, 0.5, 0.5));
 		landscape.addChild(scaleTrees);
 
-		for (int i = 0; i < 15; i++) {
+		// Generate between 50 to 100 trees
+		final int treesMin = 50;
+		final int treesMax = 100;
+		for (int i = 0; i < new Random().nextInt(treesMax - treesMin + 1) + treesMin; i++) {
 			//generate trees
 			double x, y, z;
 			x = ((Math.random() * (7)) - 3.5);
@@ -121,14 +120,12 @@ public class CGFrame extends AbstractCGFrame {
 		bottom.addChild(translate);
 		
 		translate.addChild(new SphereNode(0.3, 20));
-		TranslationNode trunk = new TranslationNode(new Vector3(0, -0.3, 0));
+		TranslationNode trunk = new TranslationNode(new Vector3(0, -0.25, 0));
 		translate.addChild(trunk);
 		trunk.addChild(new CuboidNode(0.15, 0.5, 0.15));
-		
 	}
 
 	private void addComplexObject(Node add) {
-		
 		GroupNode complexObject = new GroupNode();
 		add.addChild(complexObject);
 		
@@ -155,7 +152,6 @@ public class CGFrame extends AbstractCGFrame {
 	}
 
 	private Node addRotorAnimation(Node parent) {
-		
 		rotorRotator = new RotationNode(0, new Vector3(0,1,0));
 		parent.addChild(rotorRotator);
 		rotorTranslator = new TranslationNode(new Vector3(0, 0, 0));
@@ -170,14 +166,14 @@ public class CGFrame extends AbstractCGFrame {
 	 */
 	@Override
 	protected void timerTick() {
-		System.out.println("Tick");
-		
 		//move helicopter
-		helicopterRotator.setAngle(helicopterRotator.getAngle()+2);
-		
+		if (helicopterRotator != null) {
+		  helicopterRotator.setAngle(helicopterRotator.getAngle()+2);
+		}
 		//move rotor
-		rotorRotator.setAngle(rotorRotator.getAngle() - 20);
-		
+		if (rotorRotator != null) {
+		  rotorRotator.setAngle(rotorRotator.getAngle() - 20);
+		}
 	}
 
 	public void keyPressed(int keyCode) {
@@ -188,7 +184,7 @@ public class CGFrame extends AbstractCGFrame {
 	 * Program entry point.
 	 */
 	public static void main(String[] args) {
-		// The timer ticks every 1000 ms.
+		// The timer ticks every 100 ms.
 		new CGFrame(100);
 	}
 }
