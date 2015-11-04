@@ -126,7 +126,7 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 		Vector3 p1 = facet.getHalfEdge().getNext().getStartVertex().getPosition();
 		Vector3 p2 = facet.getHalfEdge().getNext().getNext().getStartVertex().getPosition();
 
-		return new Vector3(p0.cross(p1).add(p1.cross(p2)).add(p2.cross(p0)));
+		return new Vector3(p0.cross(p1).add(p1.cross(p2)).add(p2.cross(p0).getNormalized()));
 	}
 
 	public void computeOppositeHalfEdges() {
