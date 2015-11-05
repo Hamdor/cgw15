@@ -7,6 +7,8 @@ import computergraphics.math.Vector3;
 
 public class HalfEdgeTriangleMesh implements ITriangleMesh {
 
+	private final boolean debug = false;
+
 	/**
 	 * Contains a List of all half edges in this triangle mesh.
 	 */
@@ -27,6 +29,9 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 	 */
 	private String textureFilename = "";
 
+	/**
+	 * Constructor
+	 */
 	public HalfEdgeTriangleMesh() {
 
 		// initialise Lists.
@@ -38,30 +43,41 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 
 	@Override
 	public void addTriangle(int vertexIndex1, int vertexIndex2, int vertexIndex3) {
+		if (debug) {
+			System.out.println("add Triangle for vertices: " + vertexIndex1 + " (" + vertices.get(vertexIndex1) + ") "
+					+ vertexIndex2 + " (" + vertices.get(vertexIndex2) + ") " + vertexIndex3 + " ("
+					+ vertices.get(vertexIndex3) + ") ");
+		}
 		// create Objects
 		TriangleFacet facet = new TriangleFacet();
 		HalfEdge edge1 = new HalfEdge();
 		HalfEdge edge2 = new HalfEdge();
 		HalfEdge edge3 = new HalfEdge();
 
-		// set all properties
+		// set all properties for edge1
 		edge1.setFacet(facet);
 		edge1.setNext(edge2);
 		edge1.setStartVertex(vertices.get(vertexIndex1));
 		vertices.get(vertexIndex1).setHalfEgde(edge1);
 
+		// set all properties for edge2
 		edge2.setFacet(facet);
 		edge2.setNext(edge3);
 		edge2.setStartVertex(vertices.get(vertexIndex2));
 		vertices.get(vertexIndex2).setHalfEgde(edge2);
 
+		// set all properties for edge3
 		edge3.setFacet(facet);
 		edge3.setNext(edge1);
 		edge3.setStartVertex(vertices.get(vertexIndex3));
 		vertices.get(vertexIndex3).setHalfEgde(edge3);
 
+		// set all properties for facet
 		facet.setHalfEdge(edge1);
 		facet.setNormal(computeFacetNormal(facet));
+
+		// save facet
+		triangleFacets.add(facet);
 
 		computeOppositeHalfEdges();
 
@@ -69,6 +85,9 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 
 	@Override
 	public int addVertex(Vertex v) {
+		if(debug){
+			System.out.println("add Vertex: " + v);
+		}
 		if (!vertices.contains(v)) {
 			if (vertices.add(v)) {
 				return vertices.indexOf(v);
@@ -99,7 +118,10 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 
 	@Override
 	public void clear() {
-
+		if(debug){
+			System.out.println("-----clear all lists!-----");
+		}
+		
 		halfEdges.clear();
 		triangleFacets.clear();
 		vertices.clear();
@@ -107,14 +129,17 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 
 	@Override
 	public void computeTriangleNormals() {
-
+		if(debug){
+			System.out.println("Compute Triangle Normals...");
+		}
+		
 		for (TriangleFacet facet : triangleFacets) {
 			facet.setNormal(computeFacetNormal(facet));
 		}
 	}
 
 	/**
-	 * Calculate the normal for the facet.
+	 * Calculate the normal for a facet.
 	 * 
 	 * @param facet
 	 *            the facet the normal should be calculated for.
@@ -129,8 +154,15 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 		return new Vector3(p0.cross(p1).add(p1.cross(p2)).add(p2.cross(p0).getNormalized()));
 	}
 
+	/**
+	 * searches for all opposite HalfEdges
+	 */
 	public void computeOppositeHalfEdges() {
 
+		if(debug){
+			System.out.println("Compute opposite half edges...");
+		}
+		
 		for (HalfEdge halfEdge : halfEdges) {
 			halfEdge.setOpposite(computeOppositeHalfEdge(halfEdge));
 		}

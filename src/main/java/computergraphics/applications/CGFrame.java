@@ -9,6 +9,9 @@ package computergraphics.applications;
 
 import java.util.Random;
 
+import computergraphics.datastructures.HalfEdgeTriangleMesh;
+import computergraphics.datastructures.ITriangleMesh;
+import computergraphics.datastructures.ObjIO;
 import computergraphics.framework.AbstractCGFrame;
 import computergraphics.math.Vector3;
 import computergraphics.scenegraph.ColorNode;
@@ -21,6 +24,7 @@ import computergraphics.scenegraph.ShaderNode;
 import computergraphics.scenegraph.ShaderNode.ShaderType;
 import computergraphics.scenegraph.SphereNode;
 import computergraphics.scenegraph.TranslationNode;
+import computergraphics.scenegraph.TriangleMeshNode;
 
 /**
  * Application for the first exercise.
@@ -33,134 +37,35 @@ public class CGFrame extends AbstractCGFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 4257130065274995543L;
-	private RotationNode helicopterRotator;
-	private TranslationNode helicopterTranslater;
-	private RotationNode rotorRotator;
-	private TranslationNode rotorTranslator;
+	private ObjIO objIO;
 
 	/**
 	 * Constructor.
 	 */
-	public CGFrame(int timerInverval) {
+	public CGFrame(int timerInverval, ObjIO objIO) {
 		super(timerInverval);
+		this.objIO = objIO;
 
 		// Shader node does the lighting computation
 		ShaderNode shaderNode = new ShaderNode(ShaderType.PHONG);
 		getRoot().addChild(shaderNode);
-
-		/*
-		 * // TODO TASK 1b) Scale node ScaleNode scaleNode = new ScaleNode(new
-		 * Vector3(2.0, 2.0, 2.0)); shaderNode.addChild(scaleNode);
-		 * 
-		 * //TODO TASK 2a) Translation node TranslationNode translationNode =
-		 * new TranslationNode(new Vector3(1.0, 0.0, 0.0));
-		 * scaleNode.addChild(translationNode);
-		 * 
-		 * //TODO TASK 2b) Rotation node RotationNode rotationNode = new
-		 * RotationNode(120, new Vector3(0.0, 1.0, 0.0));
-		 * translationNode.addChild(rotationNode);
-		 * 
-		 * // Simple triangle SingleTriangleNode triangleNode = new
-		 * SingleTriangleNode(); rotationNode.addChild(triangleNode);
-		 * 
-		 * // Sphere SphereNode sphereNode = new SphereNode(0.25, 20);
-		 * shaderNode.addChild(sphereNode);
-		 */
-
-		// TODO TASK 3a) Complex Object
-		Node helicopterAnimation = addHelicopterAnimation(shaderNode);
-		TranslationNode translateComplexObject = new TranslationNode(new Vector3(0, 0, 0));
-		helicopterAnimation.addChild(translateComplexObject);
-		ScaleNode scaleComplexObject = new ScaleNode(new Vector3(0.25, 0.25, 0.25));
-		translateComplexObject.addChild(scaleComplexObject);
-		addComplexObject(scaleComplexObject);
-
-		// TODO TASK 3b) Landscape
-		TranslationNode translateLandscape = new TranslationNode(new Vector3(0, -1, 0));
-		shaderNode.addChild(translateLandscape);
-		ScaleNode scaleLandscape = new ScaleNode(new Vector3(1, 1, 1));
-		translateLandscape.addChild(scaleLandscape);
 		
-		addLandscape(scaleLandscape);
+		ColorNode colorNode = new ColorNode(1, 0, 0);
+		shaderNode.addChild(colorNode);
+		
+		ScaleNode scaleNode = new ScaleNode(new Vector3(2.0,2.0,2.0));
+		colorNode.addChild(scaleNode);
+		
+		//Read Triangle Mesh!
+		TriangleMeshNode triangleMeshNode = new TriangleMeshNode(readTriangleMesh("meshes//cow.obj"), 1);
+		scaleNode.addChild(triangleMeshNode);
+
 	}
 
-	private Node addHelicopterAnimation(Node parent) {
-		helicopterRotator = new RotationNode(0, new Vector3(0, 1, 0));
-		parent.addChild(helicopterRotator);
-		
-		helicopterTranslater = new TranslationNode(new Vector3(1, 0, 0));
-		helicopterRotator.addChild(helicopterTranslater);
-		
-		return helicopterTranslater;
-	}
-
-	private void addLandscape(Node scaleLandscape) {
-		GroupNode landscape = new GroupNode();
-		
-		scaleLandscape.addChild(landscape);
-		landscape.addChild(new CuboidNode(5, 0.001, 5));
-		
-		ScaleNode scaleTrees = new ScaleNode(new Vector3(0.5, 0.5, 0.5));
-		landscape.addChild(scaleTrees);
-
-		// Generate between 20 to 50 trees
-		final int treesMin = 20;
-		final int treesMax = 50;
-		for (int i = 0; i < new Random().nextInt(treesMax - treesMin + 1) + treesMin; i++) {
-			//generate trees
-			double x, y, z;
-			x = ((Math.random() * (7)) - 3.5);
-			y = 0.5;
-			z = ((Math.random() * (7)) - 3.5);
-			addTree(scaleTrees, new Vector3(x, y, z));
-		}
-	}
-
-	private void addTree(Node bottom, Vector3 position) {
-    final double height = new Random().nextInt(2) * 0.6; // two different heights
-		TranslationNode translate = new TranslationNode(position.add(new Vector3(0, height,0)));
-		bottom.addChild(translate);
-		translate.addChild(new SphereNode(height > 0 ? 0.6 : 0.3, 20));
-		// Build trunk
-		ColorNode trunkColor = new ColorNode (0.5,0.5,0.0);
-		TranslationNode trunk = new TranslationNode(new Vector3(0, height > 0 ? -0.55 : -0.25, 0));
-		translate.addChild(trunkColor);
-		trunkColor.addChild(trunk);
-		trunk.addChild(new CuboidNode(height > 0 ? 0.30 : 0.15, 0.5 + height, height > 0 ? 0.30 : 0.15));
-	}
-
-	private void addComplexObject(Node add) {
-		GroupNode complexObject = new GroupNode();
-		add.addChild(complexObject);
-		
-		complexObject.addChild(new SphereNode(0.5, 25));
-		
-		TranslationNode base = new TranslationNode(new Vector3(0.0, -0.45, 0.0));
-		complexObject.addChild(base);
-		TranslationNode rightBase = new TranslationNode(new Vector3(0.38, 0.0, 0.0));
-		base.addChild(rightBase);
-		rightBase.addChild(new CuboidNode(0.15, 0.15, 2.0));
-		TranslationNode leftBase = new TranslationNode(new Vector3(-0.38, 0.0, 0.0));
-		base.addChild(leftBase);
-		leftBase.addChild(new CuboidNode(0.15, 0.15, 2.0));
-		
-		TranslationNode rotors = new TranslationNode(new Vector3(0.0, 0.5, 0.0));
-		Node rotorAnimation = addRotorAnimation(complexObject);
-		rotorAnimation.addChild(rotors);
-		RotationNode firstRotor = new RotationNode(45, new Vector3(0.0, 1.0, 0.0));
-		rotors.addChild(firstRotor);
-		RotationNode secondRotor = new RotationNode(-45, new Vector3(0.0, 1.0, 0.0));
-		rotors.addChild(secondRotor);
-		firstRotor.addChild(new CuboidNode(0.05, 0.05, 3.0));
-		secondRotor.addChild(new CuboidNode(0.05, 0.05, 3.0));
-	}
-
-	private Node addRotorAnimation(Node parent) {
-		rotorRotator = new RotationNode(0, new Vector3(0,1,0));
-		parent.addChild(rotorRotator);
-		rotorTranslator = new TranslationNode(new Vector3(0, 0, 0));
-		rotorRotator.addChild(rotorTranslator);
-		return rotorTranslator;
+	private ITriangleMesh readTriangleMesh(String inFile) {
+		ITriangleMesh mesh = new HalfEdgeTriangleMesh();
+		objIO.einlesen(inFile, mesh);
+		return mesh;
 	}
 
 	/*
@@ -170,14 +75,7 @@ public class CGFrame extends AbstractCGFrame {
 	 */
 	@Override
 	protected void timerTick() {
-		//move helicopter
-		if (helicopterRotator != null) {
-		  helicopterRotator.setAngle(helicopterRotator.getAngle() + 0.5f);
-		}
-		//move rotor
-		if (rotorRotator != null) {
-		  rotorRotator.setAngle(rotorRotator.getAngle() - 20);
-		}
+		
 	}
 
 	public void keyPressed(int keyCode) {
@@ -189,6 +87,7 @@ public class CGFrame extends AbstractCGFrame {
 	 */
 	public static void main(String[] args) {
 		// The timer ticks every 10 ms.
-		new CGFrame(10);
+		ObjIO objectIO = new ObjIO();
+		new CGFrame(10, objectIO);
 	}
 }
