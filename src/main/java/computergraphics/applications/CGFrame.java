@@ -7,23 +7,15 @@
 
 package computergraphics.applications;
 
-import java.util.Random;
-
 import computergraphics.datastructures.HalfEdgeTriangleMesh;
 import computergraphics.datastructures.ITriangleMesh;
 import computergraphics.datastructures.ObjIO;
 import computergraphics.framework.AbstractCGFrame;
 import computergraphics.math.Vector3;
 import computergraphics.scenegraph.ColorNode;
-import computergraphics.scenegraph.CuboidNode;
-import computergraphics.scenegraph.GroupNode;
-import computergraphics.scenegraph.Node;
-import computergraphics.scenegraph.RotationNode;
 import computergraphics.scenegraph.ScaleNode;
 import computergraphics.scenegraph.ShaderNode;
 import computergraphics.scenegraph.ShaderNode.ShaderType;
-import computergraphics.scenegraph.SphereNode;
-import computergraphics.scenegraph.TranslationNode;
 import computergraphics.scenegraph.TriangleMeshNode;
 
 /**
