@@ -48,7 +48,6 @@ public class TriangleMeshNode extends Node {
 			HalfEdge currentHalfEdge = currentFacet.getHalfEdge();
 
 			for (int j = 0; j < 3; j++) {
-
 				// get Vertex!
 				Vertex currentVertex = currentHalfEdge.getStartVertex();
 
@@ -66,22 +65,17 @@ public class TriangleMeshNode extends Node {
 		}
 		// finished Triangles!
 		gl.glEnd();
+		listExists = true;
 	}
 
 	@Override
 	public void drawGl(GL2 gl) {
-
 		if (!listExists) {
-
 			gl.glNewList(listNumber, GL2.GL_COMPILE);
-
 			drawMesh(gl);
-
 			gl.glEndList();
 		}
-
 		gl.glCallList(listNumber);
-
 	}
 
 }
