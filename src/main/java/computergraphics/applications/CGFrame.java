@@ -51,12 +51,17 @@ public class CGFrame extends AbstractCGFrame {
 		//Read Triangle Mesh!
 		TriangleMeshNode triangleMeshNode = new TriangleMeshNode(readTriangleMesh("meshes//cow.obj"), 1);
 		scaleNode.addChild(triangleMeshNode);
-
 	}
 
 	private ITriangleMesh readTriangleMesh(String inFile) {
-		ITriangleMesh mesh = new HalfEdgeTriangleMesh();
+	  HalfEdgeTriangleMesh mesh = new HalfEdgeTriangleMesh();
+	  // Read mesh
 		objIO.einlesen(inFile, mesh);
+		// Set half edge opposites
+    mesh.computeOppositeHalfEdges();
+    final int NohE =  mesh.getNumberOfHalfEdges(); // Number of HalfEgdes
+    System.out.println("Half Edges: " + NohE + "\nHalf Egdes / 3: " +  NohE / 3);
+    
 		return mesh;
 	}
 

@@ -33,54 +33,45 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 	 * Constructor
 	 */
 	public HalfEdgeTriangleMesh() {
-
 		// initialise Lists.
 		halfEdges = new ArrayList<HalfEdge>();
 		triangleFacets = new ArrayList<TriangleFacet>();
 		vertices = new ArrayList<Vertex>();
-
 	}
 
 	@Override
 	public void addTriangle(int vertexIndex1, int vertexIndex2, int vertexIndex3) {
-		if (debug) {
-			System.out.println("add Triangle for vertices: " + vertexIndex1 + " (" + vertices.get(vertexIndex1) + ") "
-					+ vertexIndex2 + " (" + vertices.get(vertexIndex2) + ") " + vertexIndex3 + " ("
-					+ vertices.get(vertexIndex3) + ") ");
-		}
-		// create Objects
+	 if (debug) {
+	    System.out.println("add Triangle for vertices: " + vertexIndex1 + " (" + vertices.get(vertexIndex1) + ") "
+	      + vertexIndex2 + " (" + vertices.get(vertexIndex2) + ") " + vertexIndex3 + " ("
+        + vertices.get(vertexIndex3) + ") ");
+	  }
+	  final int[] idx = { vertexIndex1, vertexIndex2, vertexIndex3 };
+	  addTriangle(idx);
+	}
+	
+
+	private void addTriangle(final int[] startIds) {
 		TriangleFacet facet = new TriangleFacet();
-		HalfEdge edge1 = new HalfEdge();
-		HalfEdge edge2 = new HalfEdge();
-		HalfEdge edge3 = new HalfEdge();
-
-		// set all properties for edge1
-		edge1.setFacet(facet);
-		edge1.setNext(edge2);
-		edge1.setStartVertex(vertices.get(vertexIndex1));
-		vertices.get(vertexIndex1).setHalfEgde(edge1);
-
-		// set all properties for edge2
-		edge2.setFacet(facet);
-		edge2.setNext(edge3);
-		edge2.setStartVertex(vertices.get(vertexIndex2));
-		vertices.get(vertexIndex2).setHalfEgde(edge2);
-
-		// set all properties for edge3
-		edge3.setFacet(facet);
-		edge3.setNext(edge1);
-		edge3.setStartVertex(vertices.get(vertexIndex3));
-		vertices.get(vertexIndex3).setHalfEgde(edge3);
-
-		// set all properties for facet
-		facet.setHalfEdge(edge1);
+		HalfEdge[] edges = new HalfEdge[3];
+		for (int i = 0; i < edges.length; ++i) {
+		  // Init all 3 half edges
+		  edges[i] = new HalfEdge();
+		}
+		for (int i = 0; i < edges.length; ++i) {
+		  edges[i].setFacet(facet);
+		  // Connect half edges
+		  edges[i].setNext(i < edges.length - 1 ? edges[i + 1] : edges[0]);
+		  Vertex vertex = vertices.get(startIds[i]);
+		  edges[i].setStartVertex(vertex);
+		  vertex.setHalfEgde(edges[i]);
+      halfEdges.add(edges[i]); // Add to list
+		}
+	  // set all properties for facet
+		facet.setHalfEdge(edges[0]);
 		facet.setNormal(computeFacetNormal(facet));
-
-		// save facet
-		triangleFacets.add(facet);
-
-		computeOppositeHalfEdges();
-
+	  // save facet
+    triangleFacets.add(facet);
 	}
 
 	@Override
@@ -121,7 +112,6 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 		if(debug){
 			System.out.println("-----clear all lists!-----");
 		}
-		
 		halfEdges.clear();
 		triangleFacets.clear();
 		vertices.clear();
@@ -132,7 +122,6 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 		if(debug){
 			System.out.println("Compute Triangle Normals...");
 		}
-		
 		for (TriangleFacet facet : triangleFacets) {
 			facet.setNormal(computeFacetNormal(facet));
 		}
@@ -146,11 +135,9 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 	 * @return the calculated normal.
 	 */
 	private Vector3 computeFacetNormal(TriangleFacet facet) {
-
 		Vector3 p0 = facet.getHalfEdge().getStartVertex().getPosition();
 		Vector3 p1 = facet.getHalfEdge().getNext().getStartVertex().getPosition();
 		Vector3 p2 = facet.getHalfEdge().getNext().getNext().getStartVertex().getPosition();
-
 		return new Vector3(p0.cross(p1).add(p1.cross(p2)).add(p2.cross(p0).getNormalized()));
 	}
 
@@ -158,11 +145,9 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 	 * searches for all opposite HalfEdges
 	 */
 	public void computeOppositeHalfEdges() {
-
 		if(debug){
 			System.out.println("Compute opposite half edges...");
 		}
-		
 		for (HalfEdge halfEdge : halfEdges) {
 			halfEdge.setOpposite(computeOppositeHalfEdge(halfEdge));
 		}
@@ -176,15 +161,12 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 	 * @return the opposite HalfEdge to the given one.
 	 */
 	private HalfEdge computeOppositeHalfEdge(HalfEdge halfEdge) {
-
 		Vertex destination = halfEdge.getNext().getStartVertex();
-
 		for (HalfEdge opposite : halfEdges) {
-			if (opposite.getStartVertex().equals(destination)) {
+			if (! halfEdge.equals(opposite) && opposite.getStartVertex().equals(destination)) {
 				return opposite;
 			}
 		}
-
 		return null;
 	}
 
@@ -198,4 +180,7 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 		return textureFilename;
 	}
 
+	public int getNumberOfHalfEdges() {
+	  return halfEdges.size();
+	}
 }
