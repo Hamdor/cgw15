@@ -42,7 +42,7 @@ public class CGFrame extends AbstractCGFrame {
     ShaderNode shaderNode = new ShaderNode(ShaderType.PHONG);
     getRoot().addChild(shaderNode);
 
-    ColorNode colorNode = new ColorNode(1, 0, 0);
+    ColorNode colorNode = new ColorNode(0.445,0.32,0.60);
     shaderNode.addChild(colorNode);
 
     ScaleNode scaleNode = new ScaleNode(new Vector3(2.0, 2.0, 2.0));
