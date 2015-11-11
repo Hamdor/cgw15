@@ -80,12 +80,8 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
     if (debug) {
       System.out.println("add Vertex: " + v);
     }
-    if (!vertices.contains(v)) {
-      if (vertices.add(v)) {
-        return vertices.indexOf(v);
-      }
-    }
-    return -1;
+    vertices.add(v);
+    return vertices.size() - 1;
   }
 
   @Override
@@ -140,8 +136,10 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
     Vector3 p1 = facet.getHalfEdge().getNext().getStartVertex().getPosition();
     Vector3 p2 = facet.getHalfEdge().getNext().getNext().getStartVertex()
         .getPosition();
-    return new Vector3(
-        p0.cross(p1).add(p1.cross(p2)).add(p2.cross(p0).getNormalized()));
+    Vector3 u = p1.subtract(p0);
+    Vector3 v = p2.subtract(p0);
+    
+    return u.cross(v).getNormalized();
   }
 
   /**
@@ -168,7 +166,9 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
     for (HalfEdge opposite : halfEdges) {
       if (!halfEdge.equals(opposite)
           && opposite.getStartVertex().equals(destination)) {
-        return opposite;
+        if (opposite.getNext().getStartVertex().equals(halfEdge.getStartVertex())) {
+          return opposite;
+        }
       }
     }
     return null;
