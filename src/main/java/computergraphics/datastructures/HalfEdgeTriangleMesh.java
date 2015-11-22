@@ -123,6 +123,18 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
       facet.setNormal(computeFacetNormal(facet));
     }
   }
+  
+  public void computeVertexNormals() {
+    for (HalfEdge first : halfEdges) {
+      HalfEdge cur = first;
+      Vector3 sum  = cur.getFacet().getNormal();
+      do {
+        cur = cur.getOpposite().getNext();
+        sum.add(cur.getFacet().getNormal());
+      } while(cur != first);
+      first.getStartVertex().setNormal(sum.getNormalized());
+    }
+  }
 
   /**
    * Calculate the normal for a facet.
