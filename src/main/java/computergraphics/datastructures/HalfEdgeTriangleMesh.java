@@ -278,11 +278,12 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 		ArrayList<Double> bendings = new ArrayList<Double>();
 
 		for (Vertex vertex : vertices) {
-			bendings.add(calculateBending(vertex));
+			double bending = calculateBending(vertex);			
+			bendings.add(bending);
 		}
 
-		double kmin = bendings.get(0);
-		double kmax = bendings.get(0);
+		double kmin = Double.MAX_VALUE;
+		double kmax = Double.MIN_VALUE;
 
 		for (Double bend : bendings) {
 
@@ -297,9 +298,8 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 		for (int i = 0; i < vertices.size(); i++) {
 			double f = 1;
 			
-			if(Math.abs((kmax - kmin)) > MathHelpers.EPSILON){
+			if((Math.abs((kmax - kmin)) > MathHelpers.EPSILON)){
 				f = (bendings.get(i) - kmin) / (kmax - kmin);
-				System.out.println("kmax = kmin!");//TODO remove!
 			}
 			
 			vertices.get(i).setColor(base.multiply(f));
@@ -317,25 +317,17 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 	private double calculateBending(Vertex p_i) {
 		ArrayList<TriangleFacet> neighbourTriangles = getNeighbourFacets(p_i);
 		double averageAngle = 0;
-		double area = 1;
+		double area = 0;
 		double sum = 0;
 
 		if (neighbourTriangles.size() != 0) {
-			area = 0;
 			for (TriangleFacet p_j : neighbourTriangles) {
 
 				double scalar = p_i.getNormal().multiply(p_j.getNormal());
-
-				double magnitude = Math.sqrt(Math.pow(p_i.getNormal().get(0), 2) + Math.pow(p_i.getNormal().get(1), 2)
-						+ Math.pow(p_i.getNormal().get(2), 2));
-				magnitude *= Math.sqrt(Math.pow(p_j.getNormal().get(0), 2) + Math.pow(p_j.getNormal().get(1), 2)
-						+ Math.pow(p_j.getNormal().get(2), 2));
-				
-				double arccos = 0;
-				
-				if(Math.abs((0 - magnitude)) > MathHelpers.EPSILON){
-					arccos = Math.acos(scalar / magnitude);
+				if(scalar > 1){
+					scalar = 1;
 				}
+				double arccos = Math.acos(scalar);
 
 				sum += arccos;
 
@@ -344,7 +336,6 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 
 			averageAngle = sum / neighbourTriangles.size();
 		}
-
 		return averageAngle / area;
 	}
 
