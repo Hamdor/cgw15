@@ -3,6 +3,7 @@ package computergraphics.datastructures;
 import java.util.ArrayList;
 import java.util.List;
 
+import computergraphics.math.MathHelpers;
 import computergraphics.math.Vector3;
 
 public class HalfEdgeTriangleMesh implements ITriangleMesh {
@@ -221,10 +222,10 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 			// set other values
 			Vector3 normal = vertices.get(i).getNormal();
 			Vector3 color = vertices.get(i).getColor();
-			
-			//create new Vertex.
-			//Vertex update = new Vertex(position, normal, color);
-			//vertices.set(i, update);
+
+			// create new Vertex.
+			// Vertex update = new Vertex(position, normal, color);
+			// vertices.set(i, update);
 			vertices.get(i).setPosition(position);
 			vertices.get(i).setNormal(normal);
 			vertices.get(i).setColor(color);
@@ -261,7 +262,7 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 		ArrayList<Vertex> neighbours = new ArrayList<Vertex>();
 		HalfEdge first = vertex.getHalfEdge();
 		HalfEdge next = first;
-		
+
 		do {
 			neighbours.add(next.getOpposite().getStartVertex());
 			next = next.getOpposite().getNext();
@@ -269,93 +270,109 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 
 		return neighbours;
 	}
-	
+
 	/**
 	 * colorizes the mesh using the bending.
 	 */
-	public void colorizeMesh(){
-		ArrayList <Double> bendings = new ArrayList<Double>();
-		
+	public void colorizeMesh() {
+		ArrayList<Double> bendings = new ArrayList<Double>();
+
 		for (Vertex vertex : vertices) {
-			
 			bendings.add(calculateBending(vertex));
 		}
-		
+
 		double kmin = bendings.get(0);
 		double kmax = bendings.get(0);
-		
+
 		for (Double bend : bendings) {
-			
-			if(bend>kmax){
+
+			if (bend > kmax) {
 				kmax = bend;
-			}else if(bend<kmin){
+			} else if (bend < kmin) {
 				kmin = bend;
 			}
 		}
-		
-		Vector3 base = new Vector3(0,1,0);
+
+		Vector3 base = new Vector3(0, 1, 0);
 		for (int i = 0; i < vertices.size(); i++) {
-			double f = (bendings.get(i) - kmin) / (kmax - kmin);
+			double f = 1;
+			
+			if(Math.abs((kmax - kmin)) > MathHelpers.EPSILON){
+				f = (bendings.get(i) - kmin) / (kmax - kmin);
+				System.out.println("kmax = kmin!");//TODO remove!
+			}
+			
 			vertices.get(i).setColor(base.multiply(f));
 		}
-		
+
 	}
 
 	/**
 	 * Calculates the bending for the given Vertex
-	 * @param p_i the vertex to calculate the bending for
+	 * 
+	 * @param p_i
+	 *            the vertex to calculate the bending for
 	 * @return the bending
 	 */
 	private double calculateBending(Vertex p_i) {
 		ArrayList<TriangleFacet> neighbourTriangles = getNeighbourFacets(p_i);
-		double averageAngle;
-		double area = 0;
+		double averageAngle = 0;
+		double area = 1;
 		double sum = 0;
 
-		for (TriangleFacet p_j : neighbourTriangles) {
-			
-			double scalar = p_i.getNormal().multiply(p_j.getNormal());
-			
-			double magnitude = Math.sqrt(Math.pow(p_i.getNormal().get(0), 2) + Math.pow(p_i.getNormal().get(1), 2)
-					+ Math.pow(p_i.getNormal().get(2), 2));
-			magnitude *= Math.sqrt(Math.pow(p_j.getNormal().get(0), 2) + Math.pow(p_j.getNormal().get(1), 2)
-					+ Math.pow(p_j.getNormal().get(2), 2));
-			
-			double arccos = Math.acos(scalar / magnitude);
+		if (neighbourTriangles.size() != 0) {
+			area = 0;
+			for (TriangleFacet p_j : neighbourTriangles) {
 
-			sum += arccos;
-			
-			area += p_j.getArea();
+				double scalar = p_i.getNormal().multiply(p_j.getNormal());
+
+				double magnitude = Math.sqrt(Math.pow(p_i.getNormal().get(0), 2) + Math.pow(p_i.getNormal().get(1), 2)
+						+ Math.pow(p_i.getNormal().get(2), 2));
+				magnitude *= Math.sqrt(Math.pow(p_j.getNormal().get(0), 2) + Math.pow(p_j.getNormal().get(1), 2)
+						+ Math.pow(p_j.getNormal().get(2), 2));
+				
+				double arccos = 0;
+				
+				if(Math.abs((0 - magnitude)) > MathHelpers.EPSILON){
+					arccos = Math.acos(scalar / magnitude);
+				}
+
+				sum += arccos;
+
+				area += p_j.getArea();
+			}
+
+			averageAngle = sum / neighbourTriangles.size();
 		}
-
-		averageAngle = sum / neighbourTriangles.size();
 
 		return averageAngle / area;
 	}
-	
+
 	/**
 	 * Determines all the neighbour facets to vertex p.
-	 * @param p the vertex to determine the neighbours for.
+	 * 
+	 * @param p
+	 *            the vertex to determine the neighbours for.
 	 * @return a list containing all neighbours.
 	 */
 	private ArrayList<TriangleFacet> getNeighbourFacets(Vertex p) {
 		ArrayList<TriangleFacet> neighbours = new ArrayList<TriangleFacet>();
-		
+
 		Vertex startVertex = p.getHalfEdge().getStartVertex();
-		
+
 		for (TriangleFacet facet : triangleFacets) {
 			ArrayList<Vertex> vertices = new ArrayList<Vertex>();
 			vertices.add(facet.getHalfEdge().getStartVertex());
 			vertices.add(facet.getHalfEdge().getNext().getStartVertex());
 			vertices.add(facet.getHalfEdge().getNext().getNext().getStartVertex());
-			
-			if(vertices.contains(startVertex)){
-				if(!neighbours.contains(facet)){
+
+			if (vertices.contains(startVertex)) {
+				if (!neighbours.contains(facet)) {
 					neighbours.add(facet);
 				}
 			}
 		}
-		
+
 		return neighbours;
 	}
 
