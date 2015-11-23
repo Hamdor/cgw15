@@ -201,7 +201,7 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 	/**
 	 * Apply LaplaceSmoothing to HalfEdgeTriangleMesh Vertices.
 	 */
-	public void LaplaceSmoothing() {
+	public void laplaceSmoothing() {
 
 		ArrayList<Vector3> mainEmphasis = new ArrayList<Vector3>();
 

@@ -30,6 +30,8 @@ public class CGFrame extends AbstractCGFrame {
    */
   private static final long serialVersionUID = 4257130065274995543L;
   private ObjIO             objIO;
+  private TriangleMeshNode triangleMeshNode;
+  HalfEdgeTriangleMesh mesh;
 
   /**
    * Constructor.
@@ -49,12 +51,13 @@ public class CGFrame extends AbstractCGFrame {
     colorNode.addChild(scaleNode);
 
     // Read Triangle Mesh!
-    TriangleMeshNode triangleMeshNode = new TriangleMeshNode(
-        readTriangleMesh("meshes//cow.obj"), 1);
+    mesh = readTriangleMesh("meshes//cow.obj");
+    triangleMeshNode = new TriangleMeshNode(mesh,1);
+        
     scaleNode.addChild(triangleMeshNode);
   }
 
-  private ITriangleMesh readTriangleMesh(String inFile) {
+  private HalfEdgeTriangleMesh readTriangleMesh(String inFile) {
     HalfEdgeTriangleMesh mesh = new HalfEdgeTriangleMesh();
     // Read mesh
     objIO.einlesen(inFile, mesh);
@@ -81,6 +84,11 @@ public class CGFrame extends AbstractCGFrame {
   @Override
   public void keyPressed(int keyCode) {
     System.out.println("Key pressed: " + (char) keyCode);
+    if(keyCode == 'S'||keyCode == 's'){
+    	mesh.laplaceSmoothing();
+    	triangleMeshNode.update();
+    }
+    
   }
 
   /**

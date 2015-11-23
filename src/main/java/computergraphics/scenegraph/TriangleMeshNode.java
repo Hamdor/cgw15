@@ -18,7 +18,7 @@ public class TriangleMeshNode extends Node {
   /**
    * has the Triangle Mesh been added as a gl List?
    */
-  private boolean             listExists;
+  private boolean             listUpToDate;
 
   /**
    * Number of the gl List.
@@ -36,7 +36,7 @@ public class TriangleMeshNode extends Node {
   public TriangleMeshNode(ITriangleMesh triangleMesh, int listNumber) {
     this.triangleMesh = triangleMesh;
     this.listNumber = listNumber;
-    listExists = false;
+    listUpToDate = false;
   }
 
   private void drawMesh(GL2 gl) {
@@ -70,12 +70,16 @@ public class TriangleMeshNode extends Node {
     }
     // finished Triangles!
     gl.glEnd();
-    listExists = true;
+    listUpToDate = true;
+  }
+  
+  public void update(){
+	  listUpToDate = false;
   }
 
   @Override
   public void drawGl(GL2 gl) {
-    if (!listExists) {
+    if (!listUpToDate) {
       gl.glNewList(listNumber, GL2.GL_COMPILE);
       drawMesh(gl);
       gl.glEndList();
