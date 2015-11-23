@@ -269,7 +269,40 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 
 		return neighbours;
 	}
+	
+	public void colorizeMesh(){
+		ArrayList <Double> bendings = new ArrayList<Double>();
+		
+		for (Vertex vertex : vertices) {
+			
+			bendings.add(calculateBending(vertex));
+		}
+		
+		double kmin = bendings.get(0);
+		double kmax = bendings.get(0);
+		
+		for (Double bend : bendings) {
+			
+			if(bend>kmax){
+				kmax = bend;
+			}else if(bend<kmin){
+				kmin = bend;
+			}
+		}
+		
+		Vector3 base = new Vector3(0,1,0);
+		for (int i = 0; i < vertices.size(); i++) {
+			double f = (bendings.get(i) - kmin) / (kmax - kmin);
+			vertices.get(i).setColor(base.multiply(f));
+		}
+		
+	}
 
+	/**
+	 * Calculates the bending for the given Vertex
+	 * @param p_i the vertex to calculate the bending for
+	 * @return the bending
+	 */
 	private double calculateBending(Vertex p_i) {
 		ArrayList<TriangleFacet> neighbourTriangles = getNeighbourFacets(p_i);
 		double averageAngle;
@@ -296,10 +329,31 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 
 		return averageAngle / area;
 	}
-
+	
+	/**
+	 * Determines all the neighbour facets to vertex p.
+	 * @param p the vertex to determine the neighbours for.
+	 * @return a list containing all neighbours.
+	 */
 	private ArrayList<TriangleFacet> getNeighbourFacets(Vertex p) {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<TriangleFacet> neighbours = new ArrayList<TriangleFacet>();
+		
+		Vertex startVertex = p.getHalfEdge().getStartVertex();
+		
+		for (TriangleFacet facet : triangleFacets) {
+			ArrayList<Vertex> vertices = new ArrayList<Vertex>();
+			vertices.add(facet.getHalfEdge().getStartVertex());
+			vertices.add(facet.getHalfEdge().getNext().getStartVertex());
+			vertices.add(facet.getHalfEdge().getNext().getNext().getStartVertex());
+			
+			if(vertices.contains(startVertex)){
+				if(!neighbours.contains(facet)){
+					neighbours.add(facet);
+				}
+			}
+		}
+		
+		return neighbours;
 	}
 
 }
