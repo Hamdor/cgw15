@@ -221,10 +221,13 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 			// set other values
 			Vector3 normal = vertices.get(i).getNormal();
 			Vector3 color = vertices.get(i).getColor();
-
-			// create new Vertex.
-			Vertex update = new Vertex(position, normal, color);
-			vertices.set(i, update);
+			
+			//create new Vertex.
+			//Vertex update = new Vertex(position, normal, color);
+			//vertices.set(i, update);
+			vertices.get(i).setPosition(position);
+			vertices.get(i).setNormal(normal);
+			vertices.get(i).setColor(color);
 		}
 
 		computeTriangleNormals();
@@ -258,7 +261,7 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 		ArrayList<Vertex> neighbours = new ArrayList<Vertex>();
 		HalfEdge first = vertex.getHalfEdge();
 		HalfEdge next = first;
-
+		
 		do {
 			neighbours.add(next.getOpposite().getStartVertex());
 			next = next.getOpposite().getNext();
