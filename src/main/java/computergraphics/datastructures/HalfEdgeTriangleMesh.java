@@ -221,8 +221,11 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 			Vector3 color = vertices.get(i).getColor();
 			
 			//create new Vertex.
-			Vertex update = new Vertex(position, normal, color);
-			vertices.set(i, update);
+			//Vertex update = new Vertex(position, normal, color);
+			//vertices.set(i, update);
+			vertices.get(i).setPosition(position);
+			vertices.get(i).setNormal(normal);
+			vertices.get(i).setColor(color);
 		}
 		
 		computeTriangleNormals();
