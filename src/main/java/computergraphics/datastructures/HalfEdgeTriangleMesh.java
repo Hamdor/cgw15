@@ -205,60 +205,98 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 
 		ArrayList<Vector3> mainEmphasis = new ArrayList<Vector3>();
 
-		//calculate main emphasis for every vertex
+		// calculate main emphasis for every vertex
 		for (Vertex p : vertices) {
 			mainEmphasis.add(calculateMainEmphasis(p));
 		}
-		
-		//apply changes to every Vertex.
+
+		// apply changes to every Vertex.
 		for (int i = 0; i < vertices.size(); i++) {
-			//calculate new position
-			Vector3 position = vertices.get(i).getPosition().multiply(ALPHA); /* alpha * p_i ... */
-			position = position.add(mainEmphasis.get(i).multiply(1-ALPHA)); /* ... + (1-alpha) * c_i */
-			
-			//set other values
+			// calculate new position
+			Vector3 position = vertices.get(i).getPosition()
+					.multiply(ALPHA); /* alpha * p_i ... */
+			position = position.add(mainEmphasis.get(i)
+					.multiply(1 - ALPHA)); /* ... + (1-alpha) * c_i */
+
+			// set other values
 			Vector3 normal = vertices.get(i).getNormal();
 			Vector3 color = vertices.get(i).getColor();
-			
-			//create new Vertex.
+
+			// create new Vertex.
 			Vertex update = new Vertex(position, normal, color);
 			vertices.set(i, update);
 		}
-		
+
 		computeTriangleNormals();
 		computeVertexNormals();
 	}
 
 	/**
 	 * Calculates the main emphasis using all neighbours.
-	 * @param p the vertex to calculate the main emphasis for
+	 * 
+	 * @param p
+	 *            the vertex to calculate the main emphasis for
 	 * @return the main emphasis
 	 */
 	private Vector3 calculateMainEmphasis(Vertex p) {
-		ArrayList<Vertex> neighbours = getNeighbours(p);
+		ArrayList<Vertex> neighbours = getNeighboursVertices(p);
 		Vector3 sum = new Vector3();
 		for (Vertex n : neighbours) {
 			sum = sum.add(n.getPosition());
 		}
-		return sum.multiply((1.0/neighbours.size()));
+		return sum.multiply((1.0 / neighbours.size()));
 	}
 
 	/**
 	 * Determine Neighbours for the given vertex.
-	 * @param vertex the vertex to get the Neighbour for
+	 * 
+	 * @param vertex
+	 *            the vertex to get the Neighbour for
 	 * @return the determined neighbours.
 	 */
-	private ArrayList<Vertex> getNeighbours(Vertex vertex) {
+	private ArrayList<Vertex> getNeighboursVertices(Vertex vertex) {
 		ArrayList<Vertex> neighbours = new ArrayList<Vertex>();
 		HalfEdge first = vertex.getHalfEdge();
 		HalfEdge next = first;
-		
-		do{
+
+		do {
 			neighbours.add(next.getOpposite().getStartVertex());
 			next = next.getOpposite().getNext();
-		}while (next != first);
-		
+		} while (next != first);
+
 		return neighbours;
+	}
+
+	private double calculateBending(Vertex p_i) {
+		ArrayList<TriangleFacet> neighbourTriangles = getNeighbourFacets(p_i);
+		double averageAngle;
+		double area = 0;
+		double sum = 0;
+
+		for (TriangleFacet p_j : neighbourTriangles) {
+			
+			double scalar = p_i.getNormal().multiply(p_j.getNormal());
+			
+			double magnitude = Math.sqrt(Math.pow(p_i.getNormal().get(0), 2) + Math.pow(p_i.getNormal().get(1), 2)
+					+ Math.pow(p_i.getNormal().get(2), 2));
+			magnitude *= Math.sqrt(Math.pow(p_j.getNormal().get(0), 2) + Math.pow(p_j.getNormal().get(1), 2)
+					+ Math.pow(p_j.getNormal().get(2), 2));
+			
+			double arccos = Math.acos(scalar / magnitude);
+
+			sum += arccos;
+			
+			area += p_j.getArea();
+		}
+
+		averageAngle = sum / neighbourTriangles.size();
+
+		return averageAngle / area;
+	}
+
+	private ArrayList<TriangleFacet> getNeighbourFacets(Vertex p) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
