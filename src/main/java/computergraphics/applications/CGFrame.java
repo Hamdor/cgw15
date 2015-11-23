@@ -65,6 +65,7 @@ public class CGFrame extends AbstractCGFrame {
     mesh.computeOppositeHalfEdges();
     mesh.computeTriangleNormals();
     mesh.computeVertexNormals();
+    mesh.colorizeMesh();
     final int NohE = mesh.getNumberOfHalfEdges(); // Number of HalfEgdes
     System.out.println("Half Edges: " + NohE + "\nHalf Egdes / 3: " + NohE / 3);
 
@@ -86,6 +87,7 @@ public class CGFrame extends AbstractCGFrame {
     System.out.println("Key pressed: " + (char) keyCode);
     if(keyCode == 'S'||keyCode == 's'){
     	mesh.laplaceSmoothing();
+    	mesh.colorizeMesh();
     	triangleMeshNode.update();
     }
     

@@ -251,10 +251,10 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 	}
 
 	/**
-	 * Determine Neighbours for the given vertex.
+	 * Determine neighbours vertices for the given vertex.
 	 * 
 	 * @param vertex
-	 *            the vertex to get the Neighbour for
+	 *            the vertex to get the neighbour for
 	 * @return the determined neighbours.
 	 */
 	private ArrayList<Vertex> getNeighboursVertices(Vertex vertex) {
@@ -270,6 +270,9 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 		return neighbours;
 	}
 	
+	/**
+	 * colorizes the mesh using the bending.
+	 */
 	public void colorizeMesh(){
 		ArrayList <Double> bendings = new ArrayList<Double>();
 		

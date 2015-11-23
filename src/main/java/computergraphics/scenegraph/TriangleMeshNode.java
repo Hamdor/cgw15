@@ -57,8 +57,9 @@ public class TriangleMeshNode extends Node {
         // get positions!
         Vector3 positionVertex = currentVertex.getPosition();
         Vector3 positionNormal = currentVertex.getNormal();
-
+        Vector3 color = currentVertex.getColor();
         // draw it!
+        gl.glColor3d(color.get(0), color.get(1), color.get(2));
         gl.glNormal3d(positionNormal.get(0), positionNormal.get(1),
             positionNormal.get(2));
         gl.glVertex3d(positionVertex.get(0), positionVertex.get(1),
