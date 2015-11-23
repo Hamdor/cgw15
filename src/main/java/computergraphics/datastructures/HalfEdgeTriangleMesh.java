@@ -252,7 +252,6 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 		ArrayList<Vertex> neighbours = new ArrayList<Vertex>();
 		HalfEdge first = vertex.getHalfEdge();
 		HalfEdge next = first;
-		
 		do{
 			neighbours.add(next.getOpposite().getStartVertex());
 			next = next.getOpposite().getNext();
