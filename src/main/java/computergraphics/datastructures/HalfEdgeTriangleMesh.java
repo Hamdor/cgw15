@@ -294,7 +294,7 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 			}
 		}
 
-		Vector3 base = new Vector3(0, 1, 0);
+		Vector3 base = new Vector3(0, 10, 0);
 		for (int i = 0; i < vertices.size(); i++) {
 			double f = 1;
 			
@@ -328,9 +328,7 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 					scalar = 1;
 				}
 				double arccos = Math.acos(scalar);
-
 				sum += arccos;
-
 				area += p_j.getArea();
 			}
 
