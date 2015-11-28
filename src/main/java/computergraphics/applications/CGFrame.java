@@ -63,7 +63,7 @@ public class CGFrame extends AbstractCGFrame {
     objIO.einlesen(inFile, mesh);
     // Set half edge opposites
     mesh.computeOppositeHalfEdges();
-    mesh.computeTriangleNormals();
+    //mesh.computeTriangleNormals();
     mesh.computeVertexNormals();
     mesh.colorizeMesh();
     final int NohE = mesh.getNumberOfHalfEdges(); // Number of HalfEgdes

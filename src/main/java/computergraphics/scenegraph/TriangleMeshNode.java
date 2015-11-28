@@ -74,6 +74,10 @@ public class TriangleMeshNode extends Node {
     listUpToDate = true;
   }
   
+  /**
+   * Update the gl draw list used by this TriangleMeshNode.
+   * Use this method if any changes in TrianlgeMesh take place. 
+   */
   public void update(){
 	  listUpToDate = false;
   }

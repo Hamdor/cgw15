@@ -294,7 +294,7 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 			}
 		}
 
-		Vector3 base = new Vector3(0, 10, 0);
+		Vector3 base = new Vector3(0, 1, 0);
 		for (int i = 0; i < vertices.size(); i++) {
 			double f = 1;
 			
