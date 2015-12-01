@@ -41,6 +41,18 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 		triangleFacets = new ArrayList<TriangleFacet>();
 		vertices = new ArrayList<Vertex>();
 	}
+	
+	/**
+	 * Read the data from mesh file.
+	 * @param inFile
+	 */
+	public void readDataFromFile(String inFile){
+		ObjIO objIO = new ObjIO();
+		// Read mesh
+	    objIO.einlesen(inFile, this);
+	    //update!
+	    update();
+	}
 
 	@Override
 	public void addTriangle(int vertexIndex1, int vertexIndex2, int vertexIndex3) {
@@ -231,8 +243,7 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 			vertices.get(i).setColor(color);
 		}
 
-		computeTriangleNormals();
-		computeVertexNormals();
+		update();
 	}
 
 	/**
@@ -365,4 +376,11 @@ public class HalfEdgeTriangleMesh implements ITriangleMesh {
 		return neighbours;
 	}
 
+	public void update(){
+		computeOppositeHalfEdges();
+		computeTriangleNormals();
+		computeVertexNormals();
+		colorizeMesh();
+	}
+	
 }

@@ -10,6 +10,9 @@ package computergraphics.applications;
 import computergraphics.datastructures.HalfEdgeTriangleMesh;
 import computergraphics.datastructures.ITriangleMesh;
 import computergraphics.datastructures.ObjIO;
+import computergraphics.datastructures.TesselatedDonut;
+import computergraphics.datastructures.TesselatedSphere;
+import computergraphics.datastructures.TesselatedObject;
 import computergraphics.framework.AbstractCGFrame;
 import computergraphics.math.Vector3;
 import computergraphics.scenegraph.ColorNode;
@@ -29,16 +32,14 @@ public class CGFrame extends AbstractCGFrame {
    * 
    */
   private static final long serialVersionUID = 4257130065274995543L;
-  private ObjIO             objIO;
   private TriangleMeshNode triangleMeshNode;
-  HalfEdgeTriangleMesh mesh;
+  private TesselatedObject object;
 
   /**
    * Constructor.
    */
-  public CGFrame(int timerInverval, ObjIO objIO) {
+  public CGFrame(int timerInverval) {
     super(timerInverval);
-    this.objIO = objIO;
 
     // Shader node does the lighting computation
     ShaderNode shaderNode = new ShaderNode(ShaderType.PHONG);
@@ -47,29 +48,15 @@ public class CGFrame extends AbstractCGFrame {
     ColorNode colorNode = new ColorNode(0.445,0.32,0.60);
     shaderNode.addChild(colorNode);
 
-    ScaleNode scaleNode = new ScaleNode(new Vector3(2.0, 2.0, 2.0));
+    ScaleNode scaleNode = new ScaleNode(new Vector3(1.0, 1.0, 1.0));
     colorNode.addChild(scaleNode);
 
-    // Read Triangle Mesh!
-    mesh = readTriangleMesh("meshes//cow.obj");
-    triangleMeshNode = new TriangleMeshNode(mesh,1);
+
+    object = new TesselatedSphere(1.0);
+    
+    triangleMeshNode = new TriangleMeshNode(object.getMesh(),1);
         
     scaleNode.addChild(triangleMeshNode);
-  }
-
-  private HalfEdgeTriangleMesh readTriangleMesh(String inFile) {
-    HalfEdgeTriangleMesh mesh = new HalfEdgeTriangleMesh();
-    // Read mesh
-    objIO.einlesen(inFile, mesh);
-    // Set half edge opposites
-    mesh.computeOppositeHalfEdges();
-    //mesh.computeTriangleNormals();
-    mesh.computeVertexNormals();
-    mesh.colorizeMesh();
-    final int NohE = mesh.getNumberOfHalfEdges(); // Number of HalfEgdes
-    System.out.println("Half Edges: " + NohE + "\nHalf Egdes / 3: " + NohE / 3);
-
-    return mesh;
   }
 
   /*
@@ -86,8 +73,7 @@ public class CGFrame extends AbstractCGFrame {
   public void keyPressed(int keyCode) {
     System.out.println("Key pressed: " + (char) keyCode);
     if(keyCode == 'S'||keyCode == 's'){
-    	mesh.laplaceSmoothing();
-    	mesh.colorizeMesh();
+    	object.getMesh().laplaceSmoothing();
     	triangleMeshNode.update();
     }
     
@@ -98,7 +84,6 @@ public class CGFrame extends AbstractCGFrame {
    */
   public static void main(String[] args) {
     // The timer ticks every 10 ms.
-    ObjIO objectIO = new ObjIO();
-    new CGFrame(10, objectIO);
+    new CGFrame(10);
   }
 }
