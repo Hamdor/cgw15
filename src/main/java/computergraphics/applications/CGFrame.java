@@ -7,11 +7,7 @@
 
 package computergraphics.applications;
 
-import computergraphics.datastructures.HalfEdgeTriangleMesh;
-import computergraphics.datastructures.ITriangleMesh;
-import computergraphics.datastructures.ObjIO;
 import computergraphics.datastructures.TesselatedDonut;
-import computergraphics.datastructures.TesselatedSphere;
 import computergraphics.datastructures.TesselatedObject;
 import computergraphics.framework.AbstractCGFrame;
 import computergraphics.math.Vector3;
@@ -52,7 +48,7 @@ public class CGFrame extends AbstractCGFrame {
     colorNode.addChild(scaleNode);
 
 
-    object = new TesselatedSphere(1.0);
+    object = new TesselatedDonut(0.5,1.0);
     
     triangleMeshNode = new TriangleMeshNode(object.getMesh(),1);
         
