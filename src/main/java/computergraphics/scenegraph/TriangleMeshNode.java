@@ -56,8 +56,9 @@ public class TriangleMeshNode extends Node {
 
         // get positions!
         Vector3 positionVertex = currentVertex.getPosition();
-        Vector3 positionNormal = currentVertex.getNormal();
-        Vector3 color = currentVertex.getColor();
+        //Vector3 positionNormal = currentVertex.getNormal();
+        Vector3 positionNormal = currentFacet.getNormal();
+        Vector3 color = new Vector3(0,0,1);//currentVertex.getColor();
         // draw it!
         gl.glColor3d(color.get(0), color.get(1), color.get(2));
         gl.glNormal3d(positionNormal.get(0), positionNormal.get(1),
@@ -74,6 +75,10 @@ public class TriangleMeshNode extends Node {
     listUpToDate = true;
   }
   
+  /**
+   * Update the gl draw list used by this TriangleMeshNode.
+   * Use this method if any changes in TrianlgeMesh take place. 
+   */
   public void update(){
 	  listUpToDate = false;
   }
