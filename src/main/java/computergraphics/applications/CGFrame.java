@@ -7,12 +7,8 @@
 
 package computergraphics.applications;
 
-import computergraphics.datastructures.HalfEdgeTriangleMesh;
-import computergraphics.datastructures.ITriangleMesh;
-import computergraphics.datastructures.ObjIO;
-import computergraphics.datastructures.TesselatedDonut;
-import computergraphics.datastructures.TesselatedSphere;
 import computergraphics.datastructures.TesselatedObject;
+import computergraphics.datastructures.TesselatedSphere;
 import computergraphics.framework.AbstractCGFrame;
 import computergraphics.math.Vector3;
 import computergraphics.scenegraph.ColorNode;
