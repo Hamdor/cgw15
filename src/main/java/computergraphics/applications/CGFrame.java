@@ -8,10 +8,14 @@
 package computergraphics.applications;
 
 import computergraphics.datastructures.TesselatedDonut;
+import computergraphics.datastructures.ACurve;
 import computergraphics.datastructures.ATesselatedObject;
+import computergraphics.datastructures.BezierCurve;
+import computergraphics.datastructures.MonomCurve;
 import computergraphics.framework.AbstractCGFrame;
 import computergraphics.math.Vector3;
 import computergraphics.scenegraph.ColorNode;
+import computergraphics.scenegraph.CurveNode;
 import computergraphics.scenegraph.ScaleNode;
 import computergraphics.scenegraph.ShaderNode;
 import computergraphics.scenegraph.ShaderNode.ShaderType;
@@ -24,62 +28,75 @@ import computergraphics.scenegraph.TriangleMeshNode;
  */
 public class CGFrame extends AbstractCGFrame {
 
-  /**
-   * 
-   */
-  private static final long serialVersionUID = 4257130065274995543L;
-  private TriangleMeshNode triangleMeshNode;
-  private ATesselatedObject object;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4257130065274995543L;
 
-  /**
-   * Constructor.
-   */
-  public CGFrame(int timerInverval) {
-    super(timerInverval);
+	/**
+	 * Constructor.
+	 */
+	public CGFrame(int timerInverval) {
+		super(timerInverval);
 
-    // Shader node does the lighting computation
-    ShaderNode shaderNode = new ShaderNode(ShaderType.PHONG);
-    getRoot().addChild(shaderNode);
+		// Shader node does the lighting computation
+		ShaderNode shaderNode = new ShaderNode(ShaderType.PHONG);
+		getRoot().addChild(shaderNode);
 
-    ColorNode colorNode = new ColorNode(0.445,0.32,0.60);
-    shaderNode.addChild(colorNode);
+		ScaleNode scaleNode = new ScaleNode(new Vector3(0.5, 0.5, 0.5));
+		shaderNode.addChild(scaleNode);
+		
+		ColorNode colorNode = new ColorNode(0,0,0);
+		scaleNode.addChild(colorNode);
 
-    ScaleNode scaleNode = new ScaleNode(new Vector3(1.0, 1.0, 1.0));
-    colorNode.addChild(scaleNode);
+		CurveNode curve = new CurveNode(getCurve(0),2,20);
+		colorNode.addChild(curve);
 
+	}
 
-    object = new TesselatedDonut(0.5,1.0);
-    
-    triangleMeshNode = new TriangleMeshNode(object.getMesh(),1);
-        
-    scaleNode.addChild(triangleMeshNode);
-  }
+	private ACurve getCurve(int i) {
+		Vector3[] controlPoints = new Vector3[3];
+		switch (i) {
+		case 0:
+			controlPoints [0] = new Vector3(0,0,0);
+			controlPoints [1] = new Vector3(1,1,1);
+			controlPoints [2] = new Vector3(0,1,0);
+			break;
+		case 1:
+			controlPoints [0] = new Vector3(1.5,1.2,3.1);
+			controlPoints [1] = new Vector3(1.2,2,4.4);
+			controlPoints [2] = new Vector3(5,2,3);
+		default:
+			for (int index = 0; index<3;index++){
+				controlPoints[index] = new Vector3(Math.random()*i,Math.random()*i,Math.random()*i);
+			}
+			break;
+		}
 
-  /*
-   * (nicht-Javadoc)
-   * 
-   * @see computergrafik.framework.ComputergrafikFrame#timerTick()
-   */
-  @Override
-  protected void timerTick() {
+		return new BezierCurve(controlPoints);
+	}
 
-  }
+	/*
+	 * (nicht-Javadoc)
+	 * 
+	 * @see computergrafik.framework.ComputergrafikFrame#timerTick()
+	 */
+	@Override
+	protected void timerTick() {
 
-  @Override
-  public void keyPressed(int keyCode) {
-    System.out.println("Key pressed: " + (char) keyCode);
-    if(keyCode == 'S'||keyCode == 's'){
-    	object.getMesh().laplaceSmoothing();
-    	triangleMeshNode.update();
-    }
-    
-  }
+	}
 
-  /**
-   * Program entry point.
-   */
-  public static void main(String[] args) {
-    // The timer ticks every 10 ms.
-    new CGFrame(10);
-  }
+	@Override
+	public void keyPressed(int keyCode) {
+		System.out.println("Key pressed: " + (char) keyCode);
+
+	}
+
+	/**
+	 * Program entry point.
+	 */
+	public static void main(String[] args) {
+		// The timer ticks every 10 ms.
+		new CGFrame(10);
+	}
 }

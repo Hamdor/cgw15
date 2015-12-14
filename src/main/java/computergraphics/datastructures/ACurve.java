@@ -1,26 +1,31 @@
 package computergraphics.datastructures;
 
-import java.security.InvalidParameterException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
 
 import computergraphics.math.Vector3;
 
 public abstract class ACurve {
 
-	protected Map<Vector3, Double> controllPoints;
+	protected ArrayList<Vector3> controllPoints;
 
-	public ACurve(Vector3[] controlPoints, double[] values) {
-		if (controlPoints.length != values.length) {
-			throw new InvalidParameterException("Number of control points != number of belonging values!");
-		}
+	public ACurve(Vector3[] controlPoints) {
 		
-		this.controllPoints = new HashMap<Vector3, Double>();
+		this.controllPoints = new ArrayList<Vector3>();
 		for (int i = 0; i < controlPoints.length; i++) {
-			this.controllPoints.put(controlPoints[i], values[i]);
+			this.controllPoints.add(controlPoints[i]);
 		}
 	}
+	
+	public Vector3 getControllPoint(int index) {
+		return controllPoints.get(index);
+	}
+	
+	public int numberOfControlPoints(){
+		return controllPoints.size();
+	}
 
-	public abstract double getFunctionValue(double x);
+	public abstract Vector3 getFunctionValue(double t);
+	
+	public abstract Vector3 getTangent(double t);
 
 }
