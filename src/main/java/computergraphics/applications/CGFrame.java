@@ -8,7 +8,7 @@
 package computergraphics.applications;
 
 import computergraphics.datastructures.TesselatedDonut;
-import computergraphics.datastructures.TesselatedObject;
+import computergraphics.datastructures.ATesselatedObject;
 import computergraphics.framework.AbstractCGFrame;
 import computergraphics.math.Vector3;
 import computergraphics.scenegraph.ColorNode;
@@ -29,7 +29,7 @@ public class CGFrame extends AbstractCGFrame {
    */
   private static final long serialVersionUID = 4257130065274995543L;
   private TriangleMeshNode triangleMeshNode;
-  private TesselatedObject object;
+  private ATesselatedObject object;
 
   /**
    * Constructor.

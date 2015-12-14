@@ -1,6 +1,6 @@
 package computergraphics.datastructures;
 
-public class TesselatedSphere extends TesselatedObject {
+public class TesselatedSphere extends ATesselatedObject {
 
 	private final double radius;
 	
