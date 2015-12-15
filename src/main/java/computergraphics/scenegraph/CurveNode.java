@@ -59,19 +59,18 @@ public class CurveNode extends Node {
 		gl.glEnd();
 
 		// draw Tangent
-		double tangent = 0.5;
+		double tangent = 0.7;
 		TranslationNode point = new TranslationNode(curve.getFunctionValue(tangent));
 		ColorNode color = new ColorNode(255./255.,140./255.,0./255.);
 		point.addChild(new SphereNode(0.1, 20));
 		color.addChild(point);
 		addChild(color);
-
-		gl.glBegin(GL2.GL_LINES);
-		Vector3 start = curve.getFunctionValue(tangent);
-		gl.glVertex3d(start.get(0), start.get(1), start.get(2));
-		Vector3 end = curve.getTangent(tangent, resolution)/*.multiply(500);*/.getNormalized();
-		gl.glVertex3d(end.get(0), end.get(1), end.get(2));
-		gl.glEnd();
+    Vector3 tang = curve.getTangent(tangent, resolution).getNormalized();
+    Vector3 start = curve.getFunctionValue(tangent);
+    gl.glBegin(GL2.GL_LINES);
+    gl.glVertex3d(start.get(0) - tang.get(0), start.get(1) - tang.get(1), start.get(2) - tang.get(2));
+    gl.glVertex3d(start.get(0) + tang.get(0), start.get(1) + tang.get(1), start.get(2) + tang.get(2));
+    gl.glEnd();
 
 		listUpToDate = true;
 	}

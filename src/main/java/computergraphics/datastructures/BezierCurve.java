@@ -22,7 +22,7 @@ public class BezierCurve extends ACurve {
       // b = ( 1 - t ) ^ (n - i)
       double b = Math.pow((1 - t), (N - 1 - i));
       // c =  n! / i! - (n - i)!
-      double c = (MathHelpers.factorial(N - 1) / (MathHelpers.factorial(i) * (MathHelpers.factorial(N - 1 - i))));
+      double c = MathHelpers.over(N-1,i);
       // combine a, b, c ==> a * b * c ==>  (n! / i! - (n - i)!) * (t ^ i) * ( 1 - t ) ^ (n - i)
       Vector3 tmpProduct = ctrlI.multiply(c).multiply(b).multiply(a);
       // add the value for this iteration
@@ -33,9 +33,8 @@ public class BezierCurve extends ACurve {
 	
 	@Override
 	public Vector3 getTangent(double t, double res) {
-	  // p'(t) = c1 + c2 * 2 * t
-	  // 1 . 0 / resolution
-	  double diff = 1.0 / res / 2;
-	  return getFunctionValue(t - diff).add(getFunctionValue(t + diff).multiply(2 * t));
+    Vector3 c1 = getFunctionValue(t - (1.0 / res) / 2);
+    Vector3 c0 = getFunctionValue(t + (1.0 / res) / 2);
+    return (c0.subtract(c1)).multiply(1 / (1.0 / res));
 	}
 }
