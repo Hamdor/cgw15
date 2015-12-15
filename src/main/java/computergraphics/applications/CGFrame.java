@@ -74,7 +74,7 @@ public class CGFrame extends AbstractCGFrame {
 			break;
 		}
 
-		return new MonomCurve(controlPoints);
+		return new BezierCurve(controlPoints);
 	}
 
 	/*

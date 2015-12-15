@@ -35,6 +35,6 @@ public class BezierCurve extends ACurve {
 	public Vector3 getTangent(double t, double res) {
     Vector3 c1 = getFunctionValue(t - (1.0 / res) / 2);
     Vector3 c0 = getFunctionValue(t + (1.0 / res) / 2);
-    return (c0.subtract(c1)).multiply(1 / (1.0 / res));
+    return c0.subtract(c1);
 	}
 }
