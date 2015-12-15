@@ -32,8 +32,10 @@ public class BezierCurve extends ACurve {
   }
 	
 	@Override
-	public Vector3 getTangent(double t) {
-		// TODO Auto-generated method stub
-		return new Vector3(0,0,0);
+	public Vector3 getTangent(double t, double res) {
+	  // p'(t) = c1 + c2 * 2 * t
+	  // 1 . 0 / resolution
+	  double diff = 1.0 / res / 2;
+	  return getFunctionValue(t - diff).add(getFunctionValue(t + diff).multiply(2 * t));
 	}
 }

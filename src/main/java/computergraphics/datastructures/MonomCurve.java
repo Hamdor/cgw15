@@ -42,7 +42,7 @@ public class MonomCurve extends ACurve {
 
 
 	@Override
-	public Vector3 getTangent(double t) {
+	public Vector3 getTangent(double t, double res) {
 		//Tangent at function with 3rd degree
 		//p'(t) = c1 + c2 * 2 * t
 		return calculateC1().add(calculateC2().multiply(2*t));

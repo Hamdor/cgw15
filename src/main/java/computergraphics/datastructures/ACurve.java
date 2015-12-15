@@ -26,6 +26,6 @@ public abstract class ACurve {
 
 	public abstract Vector3 getFunctionValue(double t);
 	
-	public abstract Vector3 getTangent(double t);
+	public abstract Vector3 getTangent(double t, double res);
 
 }
