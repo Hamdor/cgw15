@@ -49,7 +49,7 @@ public class CGFrame extends AbstractCGFrame {
 		ColorNode colorNode = new ColorNode(0,0,0);
 		scaleNode.addChild(colorNode);
 
-		CurveNode curve = new CurveNode(getCurve(0),2,20);
+		CurveNode curve = new CurveNode(getCurve(1),2,20);
 		colorNode.addChild(curve);
 
 	}
@@ -66,8 +66,9 @@ public class CGFrame extends AbstractCGFrame {
 			controlPoints [0] = new Vector3(1.5,1.2,3.1);
 			controlPoints [1] = new Vector3(1.2,2,4.4);
 			controlPoints [2] = new Vector3(5,2,3);
+			break;
 		default:
-			for (int index = 0; index<3;index++){
+			for (int index = 0; index < 3;index++){
 				controlPoints[index] = new Vector3(Math.random()*i,Math.random()*i,Math.random()*i);
 			}
 			break;
