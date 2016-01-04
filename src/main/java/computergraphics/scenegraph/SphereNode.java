@@ -58,6 +58,7 @@ public class SphereNode extends Node {
 		glu.gluSphere(earth, radius, slices, stacks);
 	}
 
+	@Override
 	public IntersectionResult findIntersection(Ray3D ray) {
 		
 		//Sphere equation:		0 = ||(x - center)||² 				- radius²

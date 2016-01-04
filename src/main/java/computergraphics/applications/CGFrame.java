@@ -16,6 +16,7 @@ import computergraphics.framework.AbstractCGFrame;
 import computergraphics.math.Vector3;
 import computergraphics.scenegraph.ColorNode;
 import computergraphics.scenegraph.CurveNode;
+import computergraphics.scenegraph.PlaneNode;
 import computergraphics.scenegraph.ScaleNode;
 import computergraphics.scenegraph.ShaderNode;
 import computergraphics.scenegraph.ShaderNode.ShaderType;
@@ -43,14 +44,16 @@ public class CGFrame extends AbstractCGFrame {
 		ShaderNode shaderNode = new ShaderNode(ShaderType.PHONG);
 		getRoot().addChild(shaderNode);
 
-		ScaleNode scaleNode = new ScaleNode(new Vector3(0.5, 0.5, 0.5));
-		shaderNode.addChild(scaleNode);
+//		ScaleNode scaleNode = new ScaleNode(new Vector3(0.5, 0.5, 0.5));
+//		shaderNode.addChild(scaleNode);
+//		
+//		ColorNode colorNode = new ColorNode(0,0,0);
+//		scaleNode.addChild(colorNode);
+//
+//		CurveNode curve = new CurveNode(getCurve(1),2,20);
+//		colorNode.addChild(curve);
 		
-		ColorNode colorNode = new ColorNode(0,0,0);
-		scaleNode.addChild(colorNode);
-
-		CurveNode curve = new CurveNode(getCurve(1),2,20);
-		colorNode.addChild(curve);
+		shaderNode.addChild(new PlaneNode((new Vector3(0,1,0)), new Vector3(5,0,3)));
 
 	}
 

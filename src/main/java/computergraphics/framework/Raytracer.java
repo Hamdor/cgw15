@@ -3,7 +3,10 @@ package computergraphics.framework;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.HashMap;
 
+import computergraphics.datastructures.IntersectionResult;
 import computergraphics.datastructures.Ray3D;
 import computergraphics.framework.Camera;
 import computergraphics.math.Vector3;
@@ -20,6 +23,11 @@ public class Raytracer {
   private final Camera camera;
 
   /**
+   * Reference to the root node of the scenegraph.
+   */
+  private final Node rootNode;
+
+  /**
    * Constructor.
    * 
    * @param camera
@@ -29,6 +37,7 @@ public class Raytracer {
    */
   public Raytracer(Camera camera, Node rootNode) {
     this.camera = camera;
+    this.rootNode = rootNode;
   }
 
   /**
@@ -87,9 +96,53 @@ public class Raytracer {
    * @return Color in RGB. All values are in [0,1];
    */
   private Vector3 trace(Ray3D ray, int recursion) {
+    Vector3 color = new Vector3(0, 0, 0);
 
-    // Your task
-    return new Vector3(0, 1, 0);
+    // get all nodes of the scenegraph
+    ArrayList<Node> nodes = rootNode.getAllNodesBelow();
+    ArrayList<IntersectionResult> results = new ArrayList<IntersectionResult>();
+
+    // cross the ray with all Objects.
+    for (Node node : nodes) {
+      results.add(node.findIntersection(ray));
+    }
+
+    // calculate the nearest intersection
+    IntersectionResult nearest = getNearestIntersection(results, ray);
+
+    if (nearest != null) {
+      // evaluate if the object is in shade.
+      boolean nodeInShade = checkIfNodeInShade(nearest);
+
+      if (!nodeInShade) {
+        // calculate color with phong lighting model
+      }
+    }
+
+    return color;
+
+  }
+
+  private boolean checkIfNodeInShade(IntersectionResult nearest) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  private IntersectionResult getNearestIntersection(ArrayList<IntersectionResult> intercections, Ray3D ray) {
+    IntersectionResult nearest = null;
+    
+    for (IntersectionResult intersectionResult : intercections) {
+      if (nearest == null){
+        //nearest hasn't been set yet
+        nearest = intersectionResult;
+    
+      } else if (intersectionResult.point.subtract(ray.getPoint()).getNorm() < nearest.point.subtract(ray.getPoint()).getNorm()) {
+        //Intersection result closer than nearest. So change nearest.
+        nearest = intersectionResult;
+      }
+    }
+    
+    return nearest;
   }
 
 }

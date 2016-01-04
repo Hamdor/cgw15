@@ -59,8 +59,7 @@ public abstract class Node {
    */
   public abstract void drawGl(GL2 gl);
 
-  // DEBUGGING
-  public IntersectionResult calcIntersection(Node node, Ray3D ray) {
+  public IntersectionResult findIntersection(Ray3D ray) {
     return null;
   }
 
@@ -72,4 +71,14 @@ public abstract class Node {
     return null;
   }
 
+  public ArrayList<Node> getAllNodesBelow() {
+    ArrayList<Node> nodes = new ArrayList<Node>();
+    nodes.add(this);
+    for (int i = 0; i < getNumberOfChildren(); i++) {
+      nodes.addAll(getChildNode(i).getAllNodesBelow());
+    }
+    
+    return nodes;
+  }
+  
 }
