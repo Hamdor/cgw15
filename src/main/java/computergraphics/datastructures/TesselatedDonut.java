@@ -1,6 +1,6 @@
 package computergraphics.datastructures;
 
-public class TesselatedDonut extends TesselatedObject {
+public class TesselatedDonut extends ATesselatedObject {
 
 	private final double innerRadius;
 	private final double outerRadius;

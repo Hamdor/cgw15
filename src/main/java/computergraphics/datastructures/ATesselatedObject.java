@@ -6,7 +6,7 @@ import java.util.List;
 import computergraphics.math.LookupTable;
 import computergraphics.math.Vector3;
 
-public abstract class TesselatedObject {
+public abstract class ATesselatedObject {
 
 	private final double 	TAU = 0.0; // Tau for surfrace calculation
 	private final int 	NUM_COLUMNS = 15; // Columns in lookup table
@@ -33,7 +33,7 @@ public abstract class TesselatedObject {
 	/**
 	 * Constructor for the Tessellation base.
 	 */
-	public TesselatedObject() {
+	public ATesselatedObject() {
 
 		mesh = new HalfEdgeTriangleMesh();
 	}
