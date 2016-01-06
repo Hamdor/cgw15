@@ -81,21 +81,19 @@ public class SphereNode extends Node {
 	}
 	
 	private IntersectionResult calcIntersection(Ray3D ray, double lambda1, double lambda2){
-		IntersectionResult result;
-    double lambda = Math.min(lambda1, lambda2);
+	  IntersectionResult result = null;
+	  //find closer solution 
+	  double lambda = Math.min(lambda1, lambda2);
+	  //check for valid solution
 	  if (lambda > 0) {
-			//create intersection result!
-			result = new IntersectionResult();
-			result.object = this;
-			//	   point = ray.pos 			+ 		ray.dir 		*	  lambda 
-			result.point = ray.getPoint().add(ray.getDirection().multiply(lambda));
-			//calculate normal by subtracting the center from the point and normalize it.
-			result.normal = result.point.subtract(center).getNormalized();
-		} else {
-			// there is no solution
-			result = null;
-		}
-		return result;
+	    //	    intersection = ray.pos          +       ray.dir         *     lambda 
+	    Vector3 intersection = ray.getPoint().add(ray.getDirection().multiply(lambda));
+	    //calculate normal by subtracting the center from the point and normalize it.
+	    Vector3 normalAtIntersection = intersection.subtract(center).getNormalized();
+	    result = new IntersectionResult(intersection, normalAtIntersection, this);
+	  }
+	  
+	  return result;
 	}
 	
 }

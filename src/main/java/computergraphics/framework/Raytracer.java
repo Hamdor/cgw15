@@ -25,7 +25,7 @@ public class Raytracer {
   /**
    * Reference to the root node of the scenegraph.
    */
-  private final RootNode rootNode;
+  private final Node rootNode;
   
   /**
    * LightSource
@@ -40,7 +40,7 @@ public class Raytracer {
    * @param rootNode
    *          Root node of the scenegraph.
    */
-  public Raytracer(Camera camera, RootNode rootNode) {
+  public Raytracer(Camera camera, Node rootNode) {
     this.camera = camera;
     this.rootNode = rootNode;
   }
@@ -153,6 +153,7 @@ public class Raytracer {
     } else {
       speculare = new Vector3(0,0,0);
     }
+    
     return color.add(speculare).add(diffuse);
   }
 

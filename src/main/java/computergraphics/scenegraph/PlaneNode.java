@@ -1,6 +1,8 @@
 package computergraphics.scenegraph;
 
 import com.jogamp.opengl.GL2;
+
+import computergraphics.math.MathHelpers;
 import computergraphics.math.Vector3;
 import computergraphics.datastructures.IntersectionResult;
 import computergraphics.datastructures.Ray3D;
@@ -51,17 +53,14 @@ public class PlaneNode extends Node {
   public IntersectionResult findIntersection(Ray3D ray) {
     double lambda = (normal.multiply(span) - normal.multiply(ray.getPoint()))
         / normal.multiply(ray.getDirection());
-    if (lambda > (0.0 + 1e-6)) {
+    if (lambda > (MathHelpers.EPSILON)) {
       Vector3 intersectionPoint = ray.getPoint()
           .add(ray.getDirection().multiply(lambda));
 
       if (normal.get(0) > 0.0 && normal.get(1) > 0.0 && normal.get(2) > 0.0) {
         normal = this.normal.multiply(-1);
       }
-      IntersectionResult result = new IntersectionResult();
-      result.point = intersectionPoint;
-      result.normal = normal;
-      result.object = this;
+      IntersectionResult result = new IntersectionResult(intersectionPoint, normal, this);
       return result;
     }
     return null;
@@ -96,5 +95,9 @@ public class PlaneNode extends Node {
 
   public Vector3 getNormal() {
     return normal;
+  }
+  @Override
+  public Vector3 getColor() {
+    return color;
   }
 }
