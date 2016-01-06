@@ -25,7 +25,12 @@ public class Raytracer {
   /**
    * Reference to the root node of the scenegraph.
    */
-  private final RootNode rootNode; //TODO change to node after light source switch
+  private final RootNode rootNode;
+  
+  /**
+   * LightSource
+   */
+  LightSource light = new LightSource(new Vector3(1.0, 3.0, 6.0), new Vector3(1,0,0));
 
   /**
    * Constructor.
@@ -116,71 +121,61 @@ public class Raytracer {
         color = calculatePhongLighting(nearest, ray);
       }
     }
-
-    return color;
-
-  }
-
-  private Vector3 calculatePhongLighting(IntersectionResult intersection, Ray3D ray) {
-    Vector3 color = new Vector3(0,0,0);
-    if (rootNode.getNumberOfLightSources() > 0) {
-      LightSource light = rootNode.getLightSource(0); //TODO switch light source
-      
-      //calculate constant vectors
-      final Vector3 N = intersection.normal.getNormalized(); //Surfacenormal
-      final Vector3 Vs = ray.getDirection().getNormalized(); //ray direction
-      final Vector3 E = camera.getEye().subtract(intersection.point).getNormalized(); //vector from intercection to eyepoint
-      final Vector3 L = light.getPosition().subtract(intersection.point).getNormalized(); //vector from intercection to the lightsource
-      final int m = 20;
-      
-      //calculate color
-      //calculate diffuse portion: (N⋅L)⋅<Objektfarbe>, falls N⋅L > 0, else black
-      Vector3 diffuse;
-      final double NL = N.multiply(L);
-      if(NL > 0){
-        diffuse = intersection.object.getColor().multiply(NL);
-      } else {
-        diffuse = new Vector3(0,0,0);
-      }
-      
-      //calculate speculare portion: (R⋅(-Vs )) ⋅ (1,1,1) mit R = L-2(L⋅N)⋅N, falls R⋅(-Vs ) > 0, else black
-      Vector3 speculare;
-      final Vector3 R = L.subtract(N.multiply(N.multiply(L)*2));
-      final double RVs = R.multiply(Vs.multiply(-1));
-      if (RVs > 0){
-        speculare = (new Vector3(1,1,1)).multiply(Math.pow(RVs, m));
-      } else {
-        speculare = new Vector3(0,0,0);
-      }
-    }
     
     return color;
   }
 
+  private Vector3 calculatePhongLighting(IntersectionResult intersection, Ray3D ray) {
+    Vector3 color = new Vector3(0,0,0);
+    //calculate constant vectors
+    final Vector3 N = intersection.normal.getNormalized(); //Surfacenormal
+    final Vector3 Vs = ray.getDirection().getNormalized(); //ray direction
+    final Vector3 E = camera.getEye().subtract(intersection.point).getNormalized(); //vector from intercection to eyepoint
+    final Vector3 L = light.getPosition().subtract(intersection.point).getNormalized(); //vector from intercection to the lightsource
+    final int m = 20;
+    
+    //calculate color
+    //calculate diffuse portion: (N⋅L)⋅<Objektfarbe>, falls N⋅L > 0, else black
+    Vector3 diffuse;
+    final double NL = N.multiply(L);
+    if(NL > 0){
+      diffuse = intersection.object.getColor().multiply(NL);
+    } else {
+      diffuse = new Vector3(0,0,0);
+    }
+    
+    //calculate speculare portion: (R⋅(-Vs )) ⋅ (1,1,1) mit R = L-2(L⋅N)⋅N, falls R⋅(-Vs ) > 0, else black
+    Vector3 speculare;
+    final Vector3 R = (L.subtract((N.multiply(L.multiply(N)).multiply(2.0)))).getNormalized();//L.subtract(N.multiply(N.multiply(L)*2));
+    final double RVs = R.multiply(Vs.multiply(-1));
+    if (RVs > 0){
+      speculare = (new Vector3(1,1,1)).multiply(Math.pow(RVs, m));
+    } else {
+      speculare = new Vector3(0,0,0);
+    }
+    return color.add(speculare).add(diffuse);
+  }
+
   private ArrayList<IntersectionResult> findIntersections(Ray3D ray, ArrayList<Node> nodes) {
     ArrayList<IntersectionResult> results = new ArrayList<IntersectionResult>();
-
     for (Node node : nodes) {
-      results.add(node.findIntersection(ray));
+      IntersectionResult iresult = node.findIntersection(ray);
+      if (iresult != null)
+        results.add(iresult);
     }
     return results;
   }
 
   private boolean checkIfNodeInShade(IntersectionResult nearest, ArrayList<Node> nodes) {
-    if (rootNode.getNumberOfLightSources() > 0) {
-      LightSource light = rootNode.getLightSource(0);//TODO switch light source
-      Ray3D ray = new Ray3D(nearest.point, light.getPosition());
-      ArrayList<IntersectionResult> results = findIntersections(ray, nodes);
-
-      if (results.size() <= 1) {
-        if (results.isEmpty()) {
-          return false;
-        } else if (results.get(0).point.equals(nearest.point)){
-          return false;
-        }
+    Ray3D ray = new Ray3D(nearest.point, light.getPosition());
+    ArrayList<IntersectionResult> results = findIntersections(ray, nodes);
+    if (results.size() <= 1) {
+      if (results.isEmpty()) {
+        return false;
+      } else if (results.get(0).point.equals(nearest.point)){
+        return false;
       }
     }
-
     return true;
   }
 
@@ -192,7 +187,7 @@ public class Raytracer {
         // nearest hasn't been set yet
         nearest = intersectionResult;
 
-      } else if (intersectionResult.point.subtract(ray.getPoint()).getNorm() < nearest.point.subtract(ray.getPoint())
+      } else if (intersectionResult != null && intersectionResult.point.subtract(ray.getPoint()).getNorm() < nearest.point.subtract(ray.getPoint())
           .getNorm()) {
         // Intersection result closer than nearest. So change nearest.
         nearest = intersectionResult;

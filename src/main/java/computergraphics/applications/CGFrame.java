@@ -7,20 +7,17 @@
 
 package computergraphics.applications;
 
-import computergraphics.datastructures.TesselatedDonut;
-import computergraphics.datastructures.ACurve;
-import computergraphics.datastructures.ATesselatedObject;
-import computergraphics.datastructures.BezierCurve;
-import computergraphics.datastructures.MonomCurve;
+import java.awt.Image;
+
 import computergraphics.framework.AbstractCGFrame;
+import computergraphics.framework.Camera;
+import computergraphics.framework.ImageViewer;
+import computergraphics.framework.Raytracer;
 import computergraphics.math.Vector3;
-import computergraphics.scenegraph.ColorNode;
-import computergraphics.scenegraph.CurveNode;
 import computergraphics.scenegraph.PlaneNode;
-import computergraphics.scenegraph.ScaleNode;
 import computergraphics.scenegraph.ShaderNode;
 import computergraphics.scenegraph.ShaderNode.ShaderType;
-import computergraphics.scenegraph.TriangleMeshNode;
+import computergraphics.scenegraph.SphereNode;
 
 /**
  * Application for the first exercise.
@@ -28,6 +25,14 @@ import computergraphics.scenegraph.TriangleMeshNode;
  * @author Philipp Jenke
  */
 public class CGFrame extends AbstractCGFrame {
+  /**
+   * Width of result image
+   */
+  static final int RAYTRACE_WIDTH  = 1920;
+  /**
+   * Height of result image
+   */
+  static final int RAYTRACE_HEIGHT = 1080;
 
 	/**
 	 * 
@@ -39,45 +44,23 @@ public class CGFrame extends AbstractCGFrame {
 	 */
 	public CGFrame(int timerInverval) {
 		super(timerInverval);
-
 		// Shader node does the lighting computation
 		ShaderNode shaderNode = new ShaderNode(ShaderType.PHONG);
 		getRoot().addChild(shaderNode);
-
-//		ScaleNode scaleNode = new ScaleNode(new Vector3(0.5, 0.5, 0.5));
-//		shaderNode.addChild(scaleNode);
-//		
-//		ColorNode colorNode = new ColorNode(0,0,0);
-//		scaleNode.addChild(colorNode);
-//
-//		CurveNode curve = new CurveNode(getCurve(1),2,20);
-//		colorNode.addChild(curve);
-		
-		shaderNode.addChild(new PlaneNode((new Vector3(0,1,0)), new Vector3(5,0,3)));
-
-	}
-
-	private ACurve getCurve(int i) {
-		Vector3[] controlPoints = new Vector3[3];
-		switch (i) {
-		case 0:
-			controlPoints [0] = new Vector3(0,0,0);
-			controlPoints [1] = new Vector3(1,1,1);
-			controlPoints [2] = new Vector3(0,1,0);
-			break;
-		case 1:
-			controlPoints [0] = new Vector3(1.5,1.2,3.1);
-			controlPoints [1] = new Vector3(1.2,2,4.4);
-			controlPoints [2] = new Vector3(5,2,3);
-			break;
-		default:
-			for (int index = 0; index < 3;index++){
-				controlPoints[index] = new Vector3(Math.random()*i,Math.random()*i,Math.random()*i);
-			}
-			break;
-		}
-
-		return new BezierCurve(controlPoints);
+		// Setup a plane
+    PlaneNode plane = new PlaneNode(new Vector3(0.0, -1.0, -1.0), new Vector3(-3.0, 2.0, 0.0), new Vector3(0.0, 0.0, 3.0), new Vector3(1.0, 1.0, 1.0));
+    shaderNode.addChild(plane);
+    // Setup some spheres
+    shaderNode.addChild(new SphereNode(0.55, 20, new Vector3(0.5, 0.0, 0.0)));
+    shaderNode.addChild(new SphereNode(0.35, 20, new Vector3(-0.5, 0.5, 1.0)));
+    shaderNode.addChild(new SphereNode(0.15, 20, new Vector3(0.85, 0.0, 1.0)));
+    // Setup a new camera for ray tracer
+    Camera camera = new Camera();
+    camera.setEye(new Vector3(4.0, 1.0, 8.0));
+    // Do the actual raytracing
+    Raytracer rt = new Raytracer(camera, getRoot());
+    Image render = rt.render(RAYTRACE_WIDTH, RAYTRACE_HEIGHT);
+    new ImageViewer(render);
 	}
 
 	/*
@@ -87,20 +70,19 @@ public class CGFrame extends AbstractCGFrame {
 	 */
 	@Override
 	protected void timerTick() {
-
+	  // nop
 	}
 
 	@Override
 	public void keyPressed(int keyCode) {
-		System.out.println("Key pressed: " + (char) keyCode);
-
+	  // nop
 	}
 
 	/**
 	 * Program entry point.
 	 */
 	public static void main(String[] args) {
-		// The timer ticks every 10 ms.
-		new CGFrame(10);
+		// The timer ticks every 1000 ms.
+		new CGFrame(1000);
 	}
 }

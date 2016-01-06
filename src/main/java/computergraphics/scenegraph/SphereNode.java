@@ -42,7 +42,7 @@ public class SphereNode extends Node {
 	public SphereNode(double radius, int resolution, Vector3 center) {
 		this.radius = radius;
 		this.resolution = resolution;
-		this.center.copy(center);
+		this.center = center;
 	}
 
 	@Override
@@ -60,7 +60,6 @@ public class SphereNode extends Node {
 
 	@Override
 	public IntersectionResult findIntersection(Ray3D ray) {
-		
 		//Sphere equation:		0 = ||(x - center)||² 				- radius²
 		//parameterized ray:			ray.pos + lambda * ray.dir
 		Vector3 rayPos = ray.getPoint();
@@ -83,33 +82,8 @@ public class SphereNode extends Node {
 	
 	private IntersectionResult calcIntersection(Ray3D ray, double lambda1, double lambda2){
 		IntersectionResult result;
-		double lambda = 0;
-		
-		if (lambda1 > 0 || lambda2 > 0){
-			//there is at least one solution
-			
-			if (lambda1 > 0){
-				
-				if (lambda2 > 0){
-					// two solutions - which one to take?
-					
-					if (lambda1 < lambda2){
-						//take lambda1
-						lambda = lambda1;
-					} else{
-						//take lambda2
-						lambda = lambda1;
-					}
-				
-				} else {
-					// only one solution - take lambda1
-					lambda = lambda1;
-				}
-			} else {
-				// only one solution - take lambda2
-				lambda = lambda2;
-			}
-			
+    double lambda = Math.min(lambda1, lambda2);
+	  if (lambda > 0) {
 			//create intersection result!
 			result = new IntersectionResult();
 			result.object = this;
@@ -117,12 +91,10 @@ public class SphereNode extends Node {
 			result.point = ray.getPoint().add(ray.getDirection().multiply(lambda));
 			//calculate normal by subtracting the center from the point and normalize it.
 			result.normal = result.point.subtract(center).getNormalized();
-					
 		} else {
 			// there is no solution
 			result = null;
 		}
-		
 		return result;
 	}
 	
