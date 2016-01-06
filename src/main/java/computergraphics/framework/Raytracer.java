@@ -10,7 +10,6 @@ import computergraphics.datastructures.Ray3D;
 import computergraphics.math.Vector3;
 import computergraphics.scenegraph.LightSource;
 import computergraphics.scenegraph.Node;
-import computergraphics.scenegraph.RootNode;
 
 /**
  * Creates a raytraced image of the current scene.
@@ -101,7 +100,7 @@ public class Raytracer {
    * @return Color in RGB. All values are in [0,1];
    */
   private Vector3 trace(Ray3D ray, int recursion) {
-    Vector3 color = new Vector3(0, 0, 0);
+    Vector3 color = new Vector3(Math.random(), Math.random(), Math.random());
 
     // get all nodes of the scenegraph
     ArrayList<Node> nodes = rootNode.getAllNodesBelow();
@@ -119,6 +118,8 @@ public class Raytracer {
       if (!nodeInShade) {
         // calculate color with phong lighting model
         color = calculatePhongLighting(nearest, ray);
+      } else {
+        color = new Vector3(0, 0, 0);
       }
     }
     
@@ -130,7 +131,7 @@ public class Raytracer {
     //calculate constant vectors
     final Vector3 N = intersection.normal.getNormalized(); //Surfacenormal
     final Vector3 Vs = ray.getDirection().getNormalized(); //ray direction
-    final Vector3 E = camera.getEye().subtract(intersection.point).getNormalized(); //vector from intercection to eyepoint
+    //final Vector3 E = camera.getEye().subtract(intersection.point).getNormalized(); //vector from intercection to eyepoint
     final Vector3 L = light.getPosition().subtract(intersection.point).getNormalized(); //vector from intercection to the lightsource
     final int m = 20;
     
@@ -146,8 +147,9 @@ public class Raytracer {
     
     //calculate speculare portion: (R⋅(-Vs )) ⋅ (1,1,1) mit R = L-2(L⋅N)⋅N, falls R⋅(-Vs ) > 0, else black
     Vector3 speculare;
+    // colorspec = (R⋅(-VS))m⋅ (1,1,1) mit R = L-2(L⋅N)⋅N, falls R⋅(-VS) > 0,
     final Vector3 R = (L.subtract((N.multiply(L.multiply(N)).multiply(2.0)))).getNormalized();//L.subtract(N.multiply(N.multiply(L)*2));
-    final double RVs = R.multiply(Vs.multiply(-1));
+    final double RVs = R.multiply(Vs.multiply(1));
     if (RVs > 0){
       speculare = (new Vector3(1,1,1)).multiply(Math.pow(RVs, m));
     } else {
@@ -169,15 +171,7 @@ public class Raytracer {
 
   private boolean checkIfNodeInShade(IntersectionResult nearest, ArrayList<Node> nodes) {
     Ray3D ray = new Ray3D(nearest.point, light.getPosition());
-    ArrayList<IntersectionResult> results = findIntersections(ray, nodes);
-    if (results.size() <= 1) {
-      if (results.isEmpty()) {
-        return false;
-      } else if (results.get(0).point.equals(nearest.point)){
-        return false;
-      }
-    }
-    return true;
+    return ! findIntersections(ray, nodes).isEmpty();
   }
 
   private IntersectionResult getNearestIntersection(ArrayList<IntersectionResult> intercections, Ray3D ray) {

@@ -12,6 +12,7 @@ import com.jogamp.opengl.glu.GLUquadric;
 
 import computergraphics.datastructures.IntersectionResult;
 import computergraphics.datastructures.Ray3D;
+import computergraphics.math.MathHelpers;
 import computergraphics.math.Vector3;
 
 /**
@@ -36,13 +37,16 @@ public class SphereNode extends Node {
 	 */
 	private Vector3 center;
 
+  private Vector3 color;
+
 	/**
 	 * Constructor.
 	 */
-	public SphereNode(double radius, int resolution, Vector3 center) {
+	public SphereNode(double radius, int resolution, Vector3 center, Vector3 color) {
 		this.radius = radius;
 		this.resolution = resolution;
 		this.center = center;
+		this.color = color;
 	}
 
 	@Override
@@ -85,7 +89,7 @@ public class SphereNode extends Node {
 	  //find closer solution 
 	  double lambda = Math.min(lambda1, lambda2);
 	  //check for valid solution
-	  if (lambda > 0) {
+	  if (lambda > MathHelpers.EPSILON) {
 	    //	    intersection = ray.pos          +       ray.dir         *     lambda 
 	    Vector3 intersection = ray.getPoint().add(ray.getDirection().multiply(lambda));
 	    //calculate normal by subtracting the center from the point and normalize it.
@@ -96,4 +100,8 @@ public class SphereNode extends Node {
 	  return result;
 	}
 	
+	@Override
+	public Vector3 getColor() {
+	  return color;
+	}
 }

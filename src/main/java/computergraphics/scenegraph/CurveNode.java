@@ -45,7 +45,7 @@ public class CurveNode extends Node {
 		// add all points.
 		for (int i = 0; i < curve.numberOfControlPoints(); i++) {
 			//TranslationNode point = new TranslationNode(curve.getControllPoint(i));
-			addChild(new SphereNode(0.05, 20, curve.getControllPoint(i)));
+			addChild(new SphereNode(0.05, 20, curve.getControllPoint(i), new Vector3(0,1,0)));
 			//addChild(point);
 		}
 		// draw function
@@ -65,7 +65,7 @@ public class CurveNode extends Node {
 //		point.addChild(new SphereNode(0.1, 20));
 //		color.addChild(point);
 //		addChild(color);
-		color.addChild(new SphereNode(0.1, 20, curve.getFunctionValue(tangent)));
+		color.addChild(new SphereNode(0.1, 20, curve.getFunctionValue(tangent), new Vector3(0,1,0)));
     Vector3 tang = curve.getTangent(tangent, resolution).getNormalized();
     Vector3 start = curve.getFunctionValue(tangent);
     gl.glBegin(GL2.GL_LINES);

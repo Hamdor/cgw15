@@ -48,12 +48,12 @@ public class CGFrame extends AbstractCGFrame {
 		ShaderNode shaderNode = new ShaderNode(ShaderType.PHONG);
 		getRoot().addChild(shaderNode);
 		// Setup a plane
-    PlaneNode plane = new PlaneNode(new Vector3(0.0, -1.0, -1.0), new Vector3(-3.0, 2.0, 0.0), new Vector3(0.0, 0.0, 3.0), new Vector3(1.0, 1.0, 1.0));
-    shaderNode.addChild(plane);
+    //PlaneNode plane = new PlaneNode(new Vector3(0.0, -1.0, -1.0), new Vector3(-3.0, 2.0, 0.0), new Vector3(0.0, 0.0, 3.0), new Vector3(1.0, 1.0, 1.0));
+//    shaderNode.addChild(plane);
     // Setup some spheres
-    shaderNode.addChild(new SphereNode(0.55, 20, new Vector3(0.5, 0.0, 0.0)));
-    shaderNode.addChild(new SphereNode(0.35, 20, new Vector3(-0.5, 0.5, 1.0)));
-    shaderNode.addChild(new SphereNode(0.15, 20, new Vector3(0.85, 0.0, 1.0)));
+    //shaderNode.addChild(new SphereNode(0.55, 20, new Vector3(0.5, 0.0, 0.0)));
+    //shaderNode.addChild(new SphereNode(0.35, 20, new Vector3(-0.5, 0.5, 1.0)));
+    //shaderNode.addChild(new SphereNode(0.15, 20, new Vector3(0.85, 0.0, 1.0)));
     // Setup a new camera for ray tracer
     Camera camera = new Camera();
     camera.setEye(new Vector3(4.0, 1.0, 8.0));
