@@ -32,7 +32,7 @@ public class RayTraceImageViewer {
     Vector3 span = new Vector3(0.0, -1.0, -1.0);
     Vector3 normal = new Vector3(6.0, 9.0, 0.0).getNormalized();
     Vector3 color = new Vector3(Math.random(), Math.random(), Math.random());
-    PlaneNode plane = new PlaneNode(span, normal, color);
+    PlaneNode plane = new PlaneNode(span, normal, color, 0.5);
     root.addChild(plane);
     
     //configure and add sphere1.

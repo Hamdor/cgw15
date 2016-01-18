@@ -27,6 +27,11 @@ public class PlaneNode extends Node {
    * Value for HNF
    */
   private double d;
+  
+  /**
+   * Reflection of the plane.
+   */
+  private double       reflection;
 
   /**
    * Constructor.
@@ -35,11 +40,12 @@ public class PlaneNode extends Node {
    * @param normal
    * @param color
    */
-  public PlaneNode(Vector3 span, Vector3 normal, Vector3 color) {
+  public PlaneNode(Vector3 span, Vector3 normal, Vector3 color, double reflection) {
     this.span = span;
     this.normal = normal;
     this.color = color;
     d = normal.multiply(span);
+    this.reflection = reflection;
   }
 
   @Override
@@ -132,5 +138,9 @@ public class PlaneNode extends Node {
   private double calculateDistanceToPlane(Vector3 point) {
     return point.multiply(normal) - d;
   }
-
+  
+  @Override
+  public double getReflectionFactor() {
+    return reflection;
+  }
 }
