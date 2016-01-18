@@ -10,6 +10,7 @@ import computergraphics.datastructures.Ray3D;
 import computergraphics.math.Vector3;
 import computergraphics.scenegraph.LightSource;
 import computergraphics.scenegraph.Node;
+import computergraphics.scenegraph.PlaneNode;
 
 /**
  * Creates a raytraced image of the current scene.
@@ -171,7 +172,12 @@ public class Raytracer {
     Vector3 diffuse = new Vector3(0, 0, 0);
     final double NL = N.multiply(L);
     if (NL > 0) {
-      diffuse = intersection.object.getColor().multiply(NL);
+      if(intersection.object instanceof PlaneNode){
+        PlaneNode obj = (PlaneNode) intersection.object;
+        diffuse = obj.getColor(intersection.point).multiply(NL);
+      } else {
+        diffuse = intersection.object.getColor().multiply(NL);
+      }
     }
 
     // calculate speculare portion: (R⋅(-Vs )) ⋅ (1,1,1) mit R = L-2(L⋅N)⋅N,
