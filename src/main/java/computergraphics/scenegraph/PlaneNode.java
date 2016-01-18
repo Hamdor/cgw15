@@ -22,6 +22,11 @@ public class PlaneNode extends Node {
    * Color of the plane.
    */
   private Vector3      color;
+  
+  /**
+   * Reflection of the plane.
+   */
+  private double       reflection;
 
   /**
    * Constructor.
@@ -30,10 +35,11 @@ public class PlaneNode extends Node {
    * @param normal
    * @param color
    */
-  public PlaneNode(Vector3 span, Vector3 normal, Vector3 color) {
+  public PlaneNode(Vector3 span, Vector3 normal, Vector3 color, double reflection) {
     this.span = span;
     this.normal = normal;
     this.color = color;
+    this.reflection = reflection;
   }
 
   @Override
@@ -80,5 +86,10 @@ public class PlaneNode extends Node {
   @Override
   public Vector3 getColor() {
     return color;
+  }
+  
+  @Override
+  public double getReflectionFactor() {
+    return reflection;
   }
 }

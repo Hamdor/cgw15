@@ -25,7 +25,7 @@ public class RaytraceTest {
     Vector3 span = new Vector3(0.0, -1.0, -1.0);
     Vector3 normal = new Vector3(6.0, 9.0, 0.0).getNormalized();
     Vector3 color = new Vector3(0.8, 0.2, 0);
-    PlaneNode plane = new PlaneNode(span, normal ,color);
+    PlaneNode plane = new PlaneNode(span, normal ,color, 0);
     
     assertTrue(plane.findIntersection(new Ray3D(new Vector3(4.0, 1.0, 8.0), new Vector3(0.0, -2.0, -2.0))) != null);
     assertTrue(plane.findIntersection(new Ray3D(new Vector3(4.0, 1.0, 8.0), new Vector3(0.0, 2.0, 2.0))) == null);
