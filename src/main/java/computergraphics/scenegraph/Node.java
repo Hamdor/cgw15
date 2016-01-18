@@ -80,5 +80,10 @@ public abstract class Node {
     
     return nodes;
   }
+
+  public double getReflectionFactor() {
+    // TODO Auto-generated method stub
+    return 0;
+  }
   
 }

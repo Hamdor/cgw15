@@ -40,14 +40,16 @@ public class RayTraceImageViewer {
     int resolution = 20;
     Vector3 center = new Vector3(0.5, 0.0, 0.0);
     Vector3 color1 = new Vector3(Math.random(), Math.random(), Math.random());
-    SphereNode sphere1 = new SphereNode(radius, resolution, center, color1);
+    double reflection1 = 0.3;
+    SphereNode sphere1 = new SphereNode(radius, resolution, center, color1, reflection1);
     root.addChild(sphere1);
     
     //configure and add sphere2.
     Vector3 center2 = new Vector3(-0.5, 0.5, 1.0);
     double radius2 = 0.35;
     Vector3 color2 = new Vector3(Math.random(), Math.random(), Math.random());
-    SphereNode sphere2 = new SphereNode(radius2, resolution, center2, color2);
+    double reflection2 = 1;
+    SphereNode sphere2 = new SphereNode(radius2, resolution, center2, color2 , reflection2);
     root.addChild(sphere2);
     
     //configure and add sphere3.

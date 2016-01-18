@@ -22,32 +22,49 @@ import computergraphics.math.Vector3;
  */
 public class SphereNode extends Node {
 
-	/**
-	 * Sphere radius.
-	 */
-	private double radius;
+  /**
+   * Sphere radius.
+   */
+  private double radius;
 
-	/**
-	 * Resolution (in one dimension) of the mesh.
-	 */
-	private int resolution;
-	
-	/**
-	 * the center of this sphere
-	 */
-	private Vector3 center;
+  /**
+   * Resolution (in one dimension) of the mesh.
+   */
+  private int resolution;
+  
+  /**
+   * the center of this sphere
+   */
+  private Vector3 center;
 
+  /**
+   * the color of this sphere
+   */
   private Vector3 color;
+  
+  private double reflectionFactor;
 
 	/**
 	 * Constructor.
 	 */
-	public SphereNode(double radius, int resolution, Vector3 center, Vector3 color) {
+	public SphereNode(double radius, int resolution, Vector3 center, Vector3 color, double reflectionFactor) {
 		this.radius = radius;
 		this.resolution = resolution;
 		this.center = center;
 		this.color = color;
+		this.reflectionFactor = reflectionFactor;
 	}
+	
+	/**
+     * Constructor.
+     */
+    public SphereNode(double radius, int resolution, Vector3 center, Vector3 color) {
+        this.radius = radius;
+        this.resolution = resolution;
+        this.center = center;
+        this.color = color;
+        this.reflectionFactor = 0;
+    }
 
 	@Override
 	public void drawGl(GL2 gl) {
@@ -104,4 +121,9 @@ public class SphereNode extends Node {
 	public Vector3 getColor() {
 	  return color;
 	}
+
+	@Override
+  public double getReflectionFactor() {
+    return reflectionFactor;
+  }
 }
