@@ -7,6 +7,7 @@ import computergraphics.framework.ImageViewer;
 import computergraphics.framework.Raytracer;
 import computergraphics.math.Vector3;
 import computergraphics.scenegraph.GroupNode;
+import computergraphics.scenegraph.LightSource;
 import computergraphics.scenegraph.Node;
 import computergraphics.scenegraph.PlaneNode;
 import computergraphics.scenegraph.SphereNode;
@@ -61,8 +62,13 @@ public class RayTraceImageViewer {
     camera.setEye(new Vector3(4.0, 1.0, 8.0));
     //camera.setEye(new Vector3(1.0, 3.0, 6.0));
     
+    //create lights
+    LightSource light2 = new LightSource(new Vector3(10.0, 5.0, 0.0), new Vector3(1,1,1));
+    LightSource light3 = new LightSource(new Vector3(0, 5.0, 10.0), new Vector3(1,1,1));
+    
     //do raytracing
-    Raytracer rt = new Raytracer(camera, root);
+    Raytracer rt = new Raytracer(camera, root, light2, light3);
+//    Raytracer rt = new Raytracer(camera, root);
     
     //show image
     Image render = rt.render(RAYTRACE_WIDTH, RAYTRACE_HEIGHT);

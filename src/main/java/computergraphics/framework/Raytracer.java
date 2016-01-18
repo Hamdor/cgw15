@@ -26,10 +26,12 @@ public class Raytracer {
    */
   private final Node rootNode;
   
+  private ArrayList<LightSource> lights;
+  
   /**
    * LightSource
    */
-  LightSource light = new LightSource(new Vector3(1.0, 3.0, 6.0), new Vector3(1,0,0));
+  LightSource defaultLight = new LightSource(new Vector3(1.0, 3.0, 6.0), new Vector3(1,0,0));
 
   /**
    * Constructor.
@@ -39,9 +41,19 @@ public class Raytracer {
    * @param rootNode
    *          Root node of the scenegraph.
    */
-  public Raytracer(Camera camera, Node rootNode) {
+  public Raytracer(Camera camera, Node rootNode, LightSource ... lightSources ) {
     this.camera = camera;
     this.rootNode = rootNode;
+    lights = new ArrayList<LightSource>();
+    if(lightSources.length > 0){
+      for (LightSource lightSource : lightSources) {
+        lights.add(lightSource);
+      }
+    } else {
+      lights.add(defaultLight);
+    }
+    
+    
   }
 
   /**
@@ -100,7 +112,7 @@ public class Raytracer {
    * @return Color in RGB. All values are in [0,1];
    */
   private Vector3 trace(Ray3D ray, int recursion) {
-    Vector3 color = new Vector3(Math.random(), Math.random(), Math.random());
+    Vector3 color = new Vector3(0,0,0);//new Vector3(Math.random(), Math.random(), Math.random());
 
     // get all nodes of the scenegraph
     ArrayList<Node> nodes = rootNode.getAllNodesBelow();
@@ -112,21 +124,22 @@ public class Raytracer {
     IntersectionResult nearest = getNearestIntersection(results, ray);
 
     if (nearest != null) {
-      // evaluate if the object is in shade.
-      boolean nodeInShade = checkIfNodeInShade(nearest, nodes);
-
-      if (!nodeInShade) {
-        // calculate color with phong lighting model
-        color = calculatePhongLighting(nearest, ray);
-      } else {
-        color = new Vector3(0, 0, 0);
+      
+      for (LightSource lightSource : lights) {
+        // evaluate if the object is in shade.
+        boolean nodeInShade = checkIfNodeInShade(nearest, nodes, lightSource);
+  
+        if(!nodeInShade){
+          // calculate color with phong lighting model
+          color = color.add(calculatePhongLighting(nearest, ray, lightSource));
+        }
       }
     }
     
     return color;
   }
 
-  private Vector3 calculatePhongLighting(IntersectionResult intersection, Ray3D ray) {
+  private Vector3 calculatePhongLighting(IntersectionResult intersection, Ray3D ray, LightSource light) {
     Vector3 color = new Vector3(0,0,0);
     //calculate constant vectors
     final Vector3 N = intersection.normal.getNormalized(); //Surfacenormal
@@ -137,23 +150,19 @@ public class Raytracer {
     
     //calculate color
     //calculate diffuse portion: (N⋅L)⋅<Objektfarbe>, falls N⋅L > 0, else black
-    Vector3 diffuse;
+    Vector3 diffuse = new Vector3(0,0,0);
     final double NL = N.multiply(L);
     if(NL > 0){
       diffuse = intersection.object.getColor().multiply(NL);
-    } else {
-      diffuse = new Vector3(0,0,0);
     }
     
     //calculate speculare portion: (R⋅(-Vs )) ⋅ (1,1,1) mit R = L-2(L⋅N)⋅N, falls R⋅(-Vs ) > 0, else black
-    Vector3 speculare;
+    Vector3 speculare = new Vector3(0,0,0);
     // colorspec = (R⋅(-VS))m⋅ (1,1,1) mit R = L-2(L⋅N)⋅N, falls R⋅(-VS) > 0,
     final Vector3 R = (L.subtract((N.multiply(L.multiply(N)).multiply(2.0)))).getNormalized();//L.subtract(N.multiply(N.multiply(L)*2));
     final double RVs = R.multiply(Vs.multiply(1));
     if (RVs > 0){
       speculare = (new Vector3(1,1,1)).multiply(Math.pow(RVs, m));
-    } else {
-      speculare = new Vector3(0,0,0);
     }
     
     return color.add(speculare).add(diffuse);
@@ -169,7 +178,7 @@ public class Raytracer {
     return results;
   }
 
-  private boolean checkIfNodeInShade(IntersectionResult nearest, ArrayList<Node> nodes) {
+  private boolean checkIfNodeInShade(IntersectionResult nearest, ArrayList<Node> nodes, LightSource light) {
     Ray3D ray = new Ray3D(nearest.point, light.getPosition());
     return ! findIntersections(ray, nodes).isEmpty();
   }
